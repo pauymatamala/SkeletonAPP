@@ -13,8 +13,11 @@ import { LoginPage } from './login.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    LoginPageRoutingModule
+    LoginPageRoutingModule,
+    // LoginPage es un componente "standalone" (autónomo).
+    // se importo aquí en lugar de declararlo para que Angular
+    LoginPage
   ],
-  declarations: [LoginPage]
+  // No hay declaraciones aquí porque LoginPage es standalone.
 })
 export class LoginPageModule {}

@@ -14,7 +14,12 @@
   </ion-header>
 
   <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+    <strong *ngIf="!username">Ready to create an app?</strong>
+    <p *ngIf="!username">Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+
+    <div *ngIf="username" style="padding:16px;">
+      <h2>Bienvenido, {{ username }}</h2>
+      <p>Has ingresado correctamente y tu usuario fue pasado desde Login.</p>
+    </div>
   </div>
 </ion-content>

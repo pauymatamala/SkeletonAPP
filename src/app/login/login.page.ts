@@ -1,15 +1,157 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { IonicModule, AlertController, ToastController } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
+  standalone: true,
+  imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule]
 })
 export class LoginPage implements OnInit {
 
-  constructor() { }
+  loginForm: FormGroup;
+  passwordVisible = false;
+
+  constructor(private fb: FormBuilder, private router: Router) {
+    this.loginForm = this.fb.group({
+      username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(8), Validators.pattern('^[a-zA-Z0-9]+$')]],
+      password: ['', [Validators.required, Validators.pattern('^[0-9]{4}$')]]
+    });
+  }
+  
 
   ngOnInit() {
+  }
+
+  get username() { return this.loginForm.get('username')!; }
+  get password() { return this.loginForm.get('password')!; }
+
+  onSubmit() {
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
+
+    const user = this.loginForm.value.username;
+    // Navegar a Home pasando el usuario en state
+    this.router.navigate(['/home'], { state: { username: user } });
+  }
+
+  // Crear usuario localmente (almacenamiento local)
+  async createUser() {
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
+    const user = this.loginForm.value.username;
+    const pass = this.loginForm.value.password;
+    const usersJson = localStorage.getItem('users');
+    const users = usersJson ? JSON.parse(usersJson) : {};
+    if (users[user]) {
+      const alert = document.createElement('ion-alert');
+      alert.header = 'Usuario existente';
+      alert.message = 'El usuario ya existe.';
+      alert.buttons = ['OK'];
+      document.body.appendChild(alert);
+      await alert.present();
+      return;
+    }
+    users[user] = pass;
+    localStorage.setItem('users', JSON.stringify(users));
+    const toast = document.createElement('ion-toast');
+    toast.message = 'Usuario creado correctamente';
+    toast.duration = 2000;
+    document.body.appendChild(toast);
+    await toast.present();
+  }
+
+  // Recuperar contraseña: pedir usuario y mostrar **** o permitir resetear
+  async recoverPassword() {
+    const alertEl = document.createElement('ion-alert');
+    alertEl.header = 'Recuperar contraseña';
+    alertEl.inputs = [
+      {
+        name: 'username',
+        type: 'text',
+        placeholder: 'Ingresa tu usuario'
+      }
+    ];
+    alertEl.buttons = [
+      {
+        text: 'Cancelar',
+        role: 'cancel'
+      },
+      {
+        text: 'Buscar',
+        handler: async (data: any) => {
+          const usersJson = localStorage.getItem('users');
+          const users = usersJson ? JSON.parse(usersJson) : {};
+          const found = users[data.username];
+          if (!found) {
+            const a = document.createElement('ion-alert');
+            a.header = 'No encontrado';
+            a.message = 'Usuario no encontrado.';
+            a.buttons = ['OK'];
+            document.body.appendChild(a);
+            await a.present();
+            return;
+          }
+          // Mostrar contraseña enmascarada
+          const masked = '****';
+          const showAlert = document.createElement('ion-alert');
+          showAlert.header = 'Contraseña encontrada';
+          showAlert.message = `Contraseña: <strong>${masked}</strong>`;
+          showAlert.buttons = [
+            'OK',
+            {
+              text: 'Resetear',
+              handler: async () => {
+                const reset = document.createElement('ion-alert');
+                reset.header = 'Nueva contraseña';
+                reset.inputs = [
+                  { name: 'newpass', type: 'password', attributes: { inputmode: 'numeric', maxlength: 4 }, placeholder: '4 dígitos' }
+                ];
+                reset.buttons = [
+                  'Cancelar',
+                  {
+                    text: 'Guardar',
+                    handler: async (rdata: any) => {
+                      const np = rdata.newpass;
+                      if (!/^[0-9]{4}$/.test(np)) {
+                        const e = document.createElement('ion-alert');
+                        e.header = 'Error';
+                        e.message = 'La nueva contraseña debe ser 4 dígitos numéricos.';
+                        e.buttons = ['OK'];
+                        document.body.appendChild(e);
+                        await e.present();
+                        return;
+                      }
+                      users[data.username] = np;
+                      localStorage.setItem('users', JSON.stringify(users));
+                      const t = document.createElement('ion-toast');
+                      t.message = 'Contraseña actualizada';
+                      t.duration = 2000;
+                      document.body.appendChild(t);
+                      await t.present();
+                    }
+                  }
+                ];
+                document.body.appendChild(reset);
+                await reset.present();
+              }
+            }
+          ];
+          document.body.appendChild(showAlert);
+          await showAlert.present();
+        }
+      }
+    ];
+    document.body.appendChild(alertEl);
+    await alertEl.present();
   }
 
 }

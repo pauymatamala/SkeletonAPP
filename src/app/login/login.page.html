@@ -10,4 +10,37 @@
       <ion-title size="large">login</ion-title>
     </ion-toolbar>
   </ion-header>
+  
+  <ion-grid>
+    <ion-row>
+      <ion-col size-md="6" size-sm="12" offset-md="3" style="padding:16px;">
+        <h2 style="text-align:center">Bienvenido</h2>
+        <p style="text-align:center">Por favor inicia sesión para continuar en la aplicación.</p>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <ion-item>
+            <ion-label position="stacked">Usuario</ion-label>
+            <ion-input type="text" formControlName="username" autocomplete="off"></ion-input>
+          </ion-item>
+          <ion-note color="danger" *ngIf="username.invalid && (username.dirty || username.touched)" style="margin-left:16px">
+            Usuario requerido. 3-8 caracteres alfanuméricos.
+          </ion-note>
+
+          <ion-item>
+            <ion-label position="stacked">Contraseña</ion-label>
+            <ion-input [type]="passwordVisible ? 'text' : 'password'" formControlName="password" inputmode="numeric" maxlength="4"></ion-input>
+          </ion-item>
+          <ion-note color="danger" *ngIf="password.invalid && (password.dirty || password.touched)" style="margin-left:16px">
+            Contraseña requerida. 4 dígitos numéricos.
+          </ion-note>
+
+          <ion-button expand="block" type="submit" style="margin-top:16px">Agregar</ion-button>
+        </form>
+
+        <ion-button expand="block" color="secondary" style="margin-top:8px" (click)="createUser()">Crear usuario</ion-button>
+        <ion-button expand="block" color="tertiary" style="margin-top:8px" (click)="recoverPassword()">Recuperar contraseña</ion-button>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
