@@ -43,6 +43,11 @@ export class LoginPage implements OnInit {
     this.router.navigate(['/home'], { state: { username: user } });
   }
 
+  // Ir a la página de registro al presionar el botón "Crear usuario"
+  goToRegistrar() {
+    this.router.navigate(['/registrar']);
+  }
+
   // Crear usuario localmente (almacenamiento local)
   async createUser() {
     if (this.loginForm.invalid) {

@@ -1,0 +1,79 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Crear usuario</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Crear usuario</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <div class="ion-padding">
+    <p>Nuevo usuario</p>
+
+    <ion-list>
+      <!--Nombre completo-->
+      <ion-item>
+        <ion-input
+          label="Nombre completo"
+          labelPlacement="stacked"
+          [clearOnEdit]="true"
+          placeholder="Ingrese su nombre completo"
+        >
+        </ion-input>
+      </ion-item>
+      <!--username-->
+      <ion-item>
+        <ion-input
+          label="username"
+          labelPlacement="stacked"
+          [clearOnEdit]="true"
+          placeholder="ingrese su nombre de usuario"
+        >
+        </ion-input>
+      </ion-item>
+      <!--Email-->
+        <ion-item>
+          <ion-input labelPlacement="stacked" label="Email" placeholder="email@domain.com">
+            <ion-icon slot="start" name="lock-closed" aria-hidden="true"></ion-icon>
+            <ion-button fill="clear" slot="end" aria-label="Show/hide">
+              <ion-icon slot="icon-only" name="eye" aria-hidden="true"></ion-icon>
+            </ion-button>
+          </ion-input>
+        </ion-item>
+      <!--Contraseña-->
+        <ion-item>
+          <ion-input labelPlacement="stacked" label="Contraseña" placeholder="Ingrese su contraseña">
+            <ion-icon slot="start" name="lock-closed" aria-hidden="true"></ion-icon>
+            <ion-button fill="clear" slot="end" aria-label="Show/hide">
+              <ion-icon slot="icon-only" name="eye" aria-hidden="true"></ion-icon>
+            </ion-button>
+          </ion-input>
+        </ion-item>
+      <!--Confirmar contraseña-->
+        <ion-item>
+          <ion-input labelPlacement="stacked" label="Confirmar contraseña" placeholder="Confirme su contraseña">
+            <ion-icon slot="start" name="lock-closed" aria-hidden="true"></ion-icon>
+            <ion-button fill="clear" slot="end" aria-label="Show/hide">
+              <ion-icon slot="icon-only" name="eye" aria-hidden="true"></ion-icon>
+            </ion-button>
+          </ion-input>
+        </ion-item>
+      <!--Fecha de nacimiento-->
+        <ion-item>
+          <ion-label>Fecha de nacimiento</ion-label>
+          <ion-datetime presentation="date" [preferWheel]="true"></ion-datetime>
+        </ion-item>
+
+    </ion-list>
+  </div>
+  <div class="ion-padding">
+    <ion-button fill="outline">Registrar</ion-button>
+    <ion-button fill="outline">Volver</ion-button>
+    <ion-button fill="outline" class="push-right">Limpiar</ion-button>
+  </div>
+
+</ion-content>
+
