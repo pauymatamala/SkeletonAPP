@@ -17,10 +17,10 @@ export class LoginPage implements OnInit {
   passwordVisible = false;
 
   constructor(private fb: FormBuilder, private router: Router) {
-    this.loginForm = this.fb.group({
-      username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(8), Validators.pattern('^[a-zA-Z0-9]+$')]],
-      password: ['', [Validators.required, Validators.pattern('^[0-9]{4}$')]]
-    });
+  this.loginForm = this.fb.group({
+    username: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(6)]]
+  });
   }
   
 
@@ -37,6 +37,8 @@ export class LoginPage implements OnInit {
     }
 
     const user = this.loginForm.value.username;
+    // Guardar usuario para persistencia
+    localStorage.setItem('currentUser', user);
     // Navegar a Home pasando el usuario en state
     this.router.navigate(['/home'], { state: { username: user } });
   }
@@ -113,7 +115,7 @@ export class LoginPage implements OnInit {
                 const reset = document.createElement('ion-alert');
                 reset.header = 'Nueva contraseña';
                 reset.inputs = [
-                  { name: 'newpass', type: 'password', attributes: { inputmode: 'numeric', maxlength: 4 }, placeholder: '4 dígitos' }
+                  { name: 'newpass', type: 'password', placeholder: 'Nueva contraseña (mínimo 6 caracteres)' }
                 ];
                 reset.buttons = [
                   'Cancelar',
@@ -121,10 +123,10 @@ export class LoginPage implements OnInit {
                     text: 'Guardar',
                     handler: async (rdata: any) => {
                       const np = rdata.newpass;
-                      if (!/^[0-9]{4}$/.test(np)) {
+                      if (!/.{6,}/.test(np)) {
                         const e = document.createElement('ion-alert');
                         e.header = 'Error';
-                        e.message = 'La nueva contraseña debe ser 4 dígitos numéricos.';
+                        e.message = 'La nueva contraseña debe tener al menos 6 caracteres.';
                         e.buttons = ['OK'];
                         document.body.appendChild(e);
                         await e.present();

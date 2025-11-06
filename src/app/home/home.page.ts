@@ -9,15 +9,16 @@ import { Component, OnInit } from '@angular/core';
 export class HomePage implements OnInit {
 
   username: string | null = null;
+  router: any;
 
   constructor() {}
 
   ngOnInit() {
-    // Obtener el estado pasado desde la navegación (login)
     const state = history.state as any;
-    if (state && state.username) {
-      this.username = state.username;
-    }
+    this.username = state?.username ?? localStorage.getItem('currentUser');
   }
-
+  logout() {
+  localStorage.removeItem('currentUser');
+  this.router.navigateByUrl('/login');
+  }
 }

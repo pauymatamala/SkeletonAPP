@@ -18,23 +18,23 @@
         <p style="text-align:center">Por favor inicia sesión para continuar en la aplicación.</p>
 
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-          <ion-item>
-            <ion-label position="stacked">Usuario</ion-label>
-            <ion-input type="text" formControlName="username" autocomplete="off"></ion-input>
-          </ion-item>
-          <ion-note color="danger" *ngIf="username.invalid && (username.dirty || username.touched)" style="margin-left:16px">
-            Usuario requerido. 3-8 caracteres alfanuméricos.
-          </ion-note>
+        <ion-item>
+          <ion-label position="stacked">Correo</ion-label>
+          <ion-input type="email" formControlName="username" autocomplete="off"></ion-input>
+        </ion-item>
+        <ion-note color="danger" *ngIf="username.invalid && (username.dirty || username.touched)" style="margin-left:16px">
+          Ingrese un correo electrónico válido.
+        </ion-note>
 
           <ion-item>
             <ion-label position="stacked">Contraseña</ion-label>
-            <ion-input [type]="passwordVisible ? 'text' : 'password'" formControlName="password" inputmode="numeric" maxlength="4"></ion-input>
+            <ion-input [type]="passwordVisible ? 'text' : 'password'" formControlName="password"></ion-input>
           </ion-item>
           <ion-note color="danger" *ngIf="password.invalid && (password.dirty || password.touched)" style="margin-left:16px">
-            Contraseña requerida. 4 dígitos numéricos.
+            Contraseña requerida. Mínimo 6 caracteres.
           </ion-note>
 
-          <ion-button expand="block" type="submit" style="margin-top:16px">Agregar</ion-button>
+          <ion-button expand="block" type="submit" style="margin-top:16px">Ingresar</ion-button>
         </form>
 
         <ion-button expand="block" color="secondary" style="margin-top:8px" (click)="createUser()">Crear usuario</ion-button>
