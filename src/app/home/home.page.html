@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Blank
+      Home
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -14,12 +14,23 @@
   </ion-header>
 
   <div id="container">
-    <strong *ngIf="!username">Ready to create an app?</strong>
-    <p *ngIf="!username">Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+    <div>
+      <div id="welcome-message">
+        <h1>!Bienvenido!</h1>
+      </div>
+      <div>
+        <h6>Usuario: {{ username }}</h6>
+      </div>
+      <div id="welcome-message">
+      <h3>Informacion adicional</h3>
+      </div>
+    </div>
 
-    <div *ngIf="username" style="padding:16px;">
-      <h2>Bienvenido, {{ username }}</h2>
-      <p>Has ingresado correctamente y tu usuario fue pasado desde Login.</p>
+    <div class="datos">
+      <p>Nombre y Apellido: {{ nombre }}</p>
+      <p>Correo Electrónico: {{ email }}</p>
+      <p>''Nivel educacional: ''</p>
+      <p>Fecha de nacimiento: {{ nacimiento }}</p>
     </div>
   </div>
 </ion-content>
