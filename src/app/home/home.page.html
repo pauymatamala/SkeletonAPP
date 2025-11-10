@@ -21,16 +21,29 @@
       <div>
         <h6>Usuario: {{ username }}</h6>
       </div>
-      <div id="welcome-message">
-      <h3>Informacion adicional</h3>
-      </div>
+      
     </div>
 
     <div class="datos">
+        <h3>Informacion adicional</h3>
       <p>Nombre y Apellido: {{ nombre }}</p>
       <p>Correo Electrónico: {{ email }}</p>
-      <p>''Nivel educacional: ''</p>
+      <p>Género: {{ genero }}</p>
       <p>Fecha de nacimiento: {{ nacimiento }}</p>
+      <p>Teléfono: {{ telefono }}</p>
+      <!-- Nivel educacional -->
+      <ion-accordion-group [multiple]="true">
+        <ion-accordion value="first">
+          <ion-item slot="header" color="light">
+            <ion-label>Nivel educacional</ion-label>
+          </ion-item>
+          <div class="ion-padding" slot="content">Media Incompleta</div>
+          <div class="ion-padding" slot="content">Media Completa</div>
+          <div class="ion-padding" slot="content">Tecnico profesional</div>
+          <div class="ion-padding" slot="content">Universitario</div>
+        </ion-accordion>
+      </ion-accordion-group>
+
     </div>
   </div>
 </ion-content>

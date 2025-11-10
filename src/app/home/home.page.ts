@@ -14,13 +14,17 @@ export class HomePage implements OnInit {
   nombre: string | null = null;
   email: string | null = null;
   nacimiento: string | null = null;
+  genero: string | null = null;
+  telefono: string | null = null;
 
   constructor(private router: Router) {}
 
   ngOnInit() {
     const state = history.state as any;
+    console.log('Home init - navigation state:', state);
     // intentar obtener username desde navigation state o localStorage
     const currentUserRaw = localStorage.getItem('currentUser');
+    console.log('Home init - raw currentUser from localStorage:', currentUserRaw);
     let storedUsername: string | null = null;
     if (currentUserRaw) {
       try {
@@ -41,6 +45,8 @@ export class HomePage implements OnInit {
         this.username = t?.username ?? this.username;
         this.nacimiento = t?.nacimiento ?? null;
         this.email = t?.email ?? null;
+  this.genero = t?.genero ?? null;
+  this.telefono = t?.telefono ?? null;
       } catch (e) {
         // ignore parse errors
       }

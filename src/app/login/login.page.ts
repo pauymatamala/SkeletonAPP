@@ -35,11 +35,11 @@ export class LoginPage implements OnInit {
       return;
     }
 
-    const user = this.loginForm.value.username;
-    // Guardar usuario para persistencia
-    localStorage.setItem('currentUser', user);
-    // Navegar a Home pasando el usuario en state
-    this.router.navigate(['/home'], { state: { username: user } });
+  const user = this.loginForm.value.username;
+  // Guardar usuario para persistencia como objeto JSON { username }
+  localStorage.setItem('currentUser', JSON.stringify({ username: user }));
+  // Navegar a Home pasando el usuario en state
+  this.router.navigate(['/home'], { state: { username: user } });
   }
 
   // Ir a la página de registro al presionar el botón "Crear usuario"
