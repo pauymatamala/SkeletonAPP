@@ -13,6 +13,7 @@
   <div class="ion-padding">
     <p>Nuevo usuario</p>
 
+    <form [formGroup]="registerForm" (ngSubmit)="saveTemp()">
     <ion-list>
       <!--Nombre completo-->
       <ion-item>
@@ -21,11 +22,13 @@
           labelPlacement="stacked"
           [clearOnEdit]="true"
           placeholder="Ingrese su nombre completo"
-          [(ngModel)]="nombre"
-          name="nombre"
+          formControlName="nombre"
         >
         </ion-input>
       </ion-item>
+      <ion-note color="danger" *ngIf="registerForm.get('nombre')?.invalid && (registerForm.get('nombre')?.touched || registerForm.get('nombre')?.dirty)">
+        El nombre es requerido (mínimo 3 caracteres).
+      </ion-note>
       <!--username-->
       <ion-item>
         <ion-input
@@ -33,38 +36,40 @@
           labelPlacement="stacked"
           [clearOnEdit]="true"
           placeholder="ingrese su nombre de usuario"
-          [(ngModel)]="username"
-          name="username"
+          formControlName="username"
         >
         </ion-input>
       </ion-item>
+      <ion-note color="danger" *ngIf="registerForm.get('username')?.invalid && (registerForm.get('username')?.touched || registerForm.get('username')?.dirty)">
+        El usuario es requerido (mínimo 3 caracteres).
+      </ion-note>
       <!--Email-->
         <ion-item>
-          <ion-input labelPlacement="stacked" label="Email" placeholder="email@domain.com" [(ngModel)]="email" name="email">
-            <ion-icon slot="start" name="lock-closed" aria-hidden="true"></ion-icon>
-            <ion-button fill="clear" slot="end" aria-label="Show/hide">
-              <ion-icon slot="icon-only" name="eye" aria-hidden="true"></ion-icon>
-            </ion-button>
+          <ion-input labelPlacement="stacked" label="Email" placeholder="email@domain.com" type="email" formControlName="email">
+            <ion-icon slot="start" name="mail" aria-hidden="true"></ion-icon>
           </ion-input>
         </ion-item>
+        <ion-note color="danger" *ngIf="registerForm.get('email')?.invalid && (registerForm.get('email')?.touched || registerForm.get('email')?.dirty)">
+          Ingrese un correo válido.
+        </ion-note>
       <!--Contraseña-->
         <ion-item>
-          <ion-input labelPlacement="stacked" label="Contraseña" placeholder="Ingrese su contraseña" [(ngModel)]="password" name="password">
+          <ion-input labelPlacement="stacked" label="Contraseña" placeholder="Ingrese su contraseña" type="password" formControlName="password">
             <ion-icon slot="start" name="lock-closed" aria-hidden="true"></ion-icon>
-            <ion-button fill="clear" slot="end" aria-label="Show/hide">
-              <ion-icon slot="icon-only" name="eye" aria-hidden="true"></ion-icon>
-            </ion-button>
           </ion-input>
         </ion-item>
+        <ion-note color="danger" *ngIf="registerForm.get('password')?.invalid && (registerForm.get('password')?.touched || registerForm.get('password')?.dirty)">
+          La contraseña es requerida (mínimo 6 caracteres).
+        </ion-note>
       <!--Confirmar contraseña-->
         <ion-item>
-          <ion-input labelPlacement="stacked" label="Confirmar contraseña" placeholder="Confirme su contraseña" [(ngModel)]="confirm" name="confirm">
+          <ion-input labelPlacement="stacked" label="Confirmar contraseña" placeholder="Confirme su contraseña" type="password" formControlName="confirm">
             <ion-icon slot="start" name="lock-closed" aria-hidden="true"></ion-icon>
-            <ion-button fill="clear" slot="end" aria-label="Show/hide">
-              <ion-icon slot="icon-only" name="eye" aria-hidden="true"></ion-icon>
-            </ion-button>
           </ion-input>
         </ion-item>
+        <ion-note color="danger" *ngIf="registerForm.hasError('passwordsMismatch') && (registerForm.get('confirm')?.touched || registerForm.get('confirm')?.dirty)">
+          Las contraseñas no coinciden.
+        </ion-note>
       <!--Fecha de nacimiento-->
         <ion-item>
           <ion-label>Fecha de nacimiento</ion-label>
@@ -85,11 +90,13 @@
         </ion-item>
 
     </ion-list>
-  </div>
-  <div class="ion-padding">
-    <ion-button fill="outline" (click)="saveTemp()">Registrar</ion-button>
-    <ion-button fill="outline">Volver</ion-button>
-    <ion-button fill="outline" class="push-right">Limpiar</ion-button>
+    <div class="ion-padding">
+      <ion-button expand="block" type="submit" [disabled]="registerForm.invalid">Registrar</ion-button>
+      <ion-button expand="block" color="medium" type="button" (click)="goToLogin()">Volver</ion-button>
+      <ion-button expand="block" color="light" type="button" (click)="registerForm.reset()">Limpiar</ion-button>
+    </div>
+    </form>
+
   </div>
 
 </ion-content>

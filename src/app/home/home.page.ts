@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -17,12 +17,23 @@ export class HomePage implements OnInit {
   genero: string | null = null;
   telefono: string | null = null;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit() {
-    const state = history.state as any;
-    console.log('Home init - navigation state:', state);
-    // intentar obtener username desde navigation state o localStorage
+    // Primero intentar leer NavigationExtras (forma "oficial")
+  const nav = this.router.getCurrentNavigation ? this.router.getCurrentNavigation() : null;
+  const navState = nav && (nav.extras?.state as any | undefined);
+    if (navState) {
+      console.log('Home init - navigation extras state via Router.getCurrentNavigation():', navState);
+    }
+
+    // backup: history.state (por si la navegación vino desde fuera del router o reload)
+    const historyState = history.state as any;
+    if (historyState) {
+      console.log('Home init - history.state:', historyState);
+    }
+
+    // intentar obtener username desde navigation extras -> history.state -> localStorage
     const currentUserRaw = localStorage.getItem('currentUser');
     console.log('Home init - raw currentUser from localStorage:', currentUserRaw);
     let storedUsername: string | null = null;
@@ -34,7 +45,8 @@ export class HomePage implements OnInit {
         storedUsername = currentUserRaw;
       }
     }
-    this.username = state?.username ?? storedUsername;
+
+    this.username = navState?.username ?? historyState?.username ?? storedUsername;
 
     // intentar cargar datos temporales guardados en sessionStorage (desde Registrar)
     const temp = sessionStorage.getItem('tempRegistration');

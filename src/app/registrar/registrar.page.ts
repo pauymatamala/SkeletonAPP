@@ -1,5 +1,6 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 
 @Component({
   selector: 'app-registrar',
@@ -8,19 +9,26 @@ import { Router } from '@angular/router';
   styleUrls: ['./registrar.page.scss'],
 })
 
-export class RegistrarPage {
-  constructor(private router: Router) {}
+export class RegistrarPage implements OnInit {
+  registerForm: FormGroup;
   @ViewChild('popover') popover!: HTMLIonPopoverElement;
 
   isOpen = false;
   nacimiento: string | null = null;
-  // Campos temporales enlazados desde la plantilla
-  nombre: string = '';
-  username: string = '';
-  email: string = '';
-  password: string = '';
-  confirm: string = '';
   nacimientoDate: Date = new Date();
+
+  constructor(private router: Router, private fb: FormBuilder) {
+    this.registerForm = this.fb.group({
+      nombre: ['', [Validators.required, Validators.minLength(3)]],
+      username: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirm: ['', [Validators.required]],
+      nacimiento: [null]
+    }, { validators: this.passwordsMatch });
+  }
+
+  ngOnInit(): void {}
 
   presentPopover(e: Event) {
     // asigna el evento al popover y abre
@@ -29,13 +37,13 @@ export class RegistrarPage {
   }
 
   saveTemp() {
+    if (this.registerForm.invalid) {
+      this.registerForm.markAllAsTouched();
+      return;
+    }
+
     const temp = {
-      nombre: this.nombre,
-      username: this.username,
-      email: this.email,
-      password: this.password,
-      confirm: this.confirm,
-      nacimiento: this.nacimiento,
+      ...this.registerForm.value,
       savedAt: new Date().toISOString()
     };
     // Guardar temporalmente en sessionStorage
@@ -61,6 +69,20 @@ export class RegistrarPage {
     }
     this.isOpen = false;
     console.log('Fecha seleccionada:', this.nacimiento);
+    // también asignar al formulario
+    try {
+      this.registerForm.patchValue({ nacimiento: this.nacimiento });
+    } catch (e) {}
+  }
+
+  // Validador de grupo: confirmar contraseña
+  private passwordsMatch(control: AbstractControl) {
+    const p = control.get('password')?.value;
+    const c = control.get('confirm')?.value;
+    if (p && c && p !== c) {
+      return { passwordsMismatch: true };
+    }
+    return null;
   }
 
   // Navegación mínima para el botón "Registrar"
