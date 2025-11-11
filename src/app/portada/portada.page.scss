@@ -1,5 +1,5 @@
 .hero {
-	background: linear-gradient(180deg, #0f172a 0%, #0b1220 100%);
+	background: linear-gradient(180deg, #8b7b2c 0%, #0b1220 100%);
 	color: #fff;
 	padding: 40px 16px;
 }
@@ -25,6 +25,25 @@
 	--background: rgba(255,255,255,0.04);
 	--border-radius: 10px;
 }
+
+.categories {
+	display: flex;
+	gap: 10px;
+	justify-content: center;
+	flex-wrap: wrap;
+	margin-top: 12px;
+}
+.category-chip {
+	padding: 8px 12px;
+	border-radius: 999px;
+	background: rgba(255,255,255,0.06);
+	color: #fff;
+	cursor: pointer;
+	user-select: none;
+	transition: transform 160ms cubic-bezier(.2,.8,.2,1), box-shadow 160ms ease, background 160ms ease;
+}
+.category-chip:active { transform: scale(0.96); }
+.category-chip:focus { outline: none; box-shadow: 0 8px 26px rgba(2,6,23,0.45); }
 .catalog {
 	padding: 24px 16px;
 	max-width: 1100px;
@@ -69,3 +88,8 @@
 
 /* cuando la página entra, activamos la clase .visible en JS para revelar elementos */
 .card.visible { transform: translateY(0); opacity: 1; }
+
+#busqueda {
+
+    background-color: rgb(125, 124, 124);
+}

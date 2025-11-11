@@ -1,0 +1,46 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>categorias</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">categorias</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <div class="page-frame">
+    <div class="container">
+    <h2 #catTitle class="cat-title">{{ selectedCategory ? ('Categoría: ' + selectedCategory) : 'Explora por categorías' }}</h2>
+    <p class="hint">Toca una categoría para navegar.</p>
+
+    <div class="categories-grid">
+      <div class="cat-card hidden" #catCard *ngFor="let c of categories" (click)="tapCategory(c, $event.currentTarget)" tabindex="0" role="button" aria-label="Categoria {{ c }}">
+        <div class="cat-card-inner">
+          <div class="cat-icon" aria-hidden="true"></div>
+          <div class="cat-name">{{ c }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="selection-note" *ngIf="selectedCategory">
+      <p>Has seleccionado: <strong>{{ selectedCategory }}</strong></p>
+    </div>
+    
+    <!-- Lista de juegos para la categoría seleccionada -->
+    <div class="games-list" *ngIf="displayedGames && displayedGames.length">
+      <h3 class="games-title">Juegos en {{ selectedCategory }}</h3>
+      <div class="games-grid">
+        <div class="game-card" *ngFor="let g of displayedGames">
+          <div class="game-art" aria-hidden="true"></div>
+          <div class="game-info">
+            <h4>{{ g.title }}</h4>
+            <div class="price">{{ g.price }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</ion-content>

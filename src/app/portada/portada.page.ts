@@ -17,11 +17,14 @@ export class PortadaPage implements OnInit {
 
   // ejemplo de catálogo (local, sin imágenes externas)
   games = [
-    { id: 'g1', title: 'Shadow Quest', price: '$29.99', tag: 'RPG' },
-    { id: 'g2', title: 'Speed Racer X', price: '$19.99', tag: 'Racing' },
-    { id: 'g3', title: 'Battlefront Legends', price: '$49.99', tag: 'Action' },
-    { id: 'g4', title: 'Mystic Farms', price: '$9.99', tag: 'Casual' }
+    { id: 'g1', title: 'Shadow Quest', price: '$29.990', tag: 'RPG' },
+    { id: 'g2', title: 'Speed Racer X', price: '$19.990', tag: 'Racing' },
+    { id: 'g3', title: 'Battlefront Legends', price: '$49.990', tag: 'Action' },
+    { id: 'g4', title: 'Mystic Farms', price: '$9.990', tag: 'Casual' }
   ];
+
+  // lista de categorías para mostrar en la portada (en español)
+  categories = ['Acción', 'RPG', 'Carreras', 'Casual', 'Indie', 'Estrategia', 'Aventura', 'Deportes', 'Simulación'];
 
   constructor(private animationCtrl: AnimationController, private fb: FormBuilder, private router: Router) {
     this.searchForm = this.fb.group({
@@ -72,6 +75,29 @@ export class PortadaPage implements OnInit {
   openGame(game: any) {
     // navegar a home (por ejemplo) pasando el id del juego
     this.router.navigate(['/home'], { state: { gameId: game.id, title: game.title }, queryParams: { gameId: game.id } });
+  }
+
+  // al abrir una categoría, reproducir una micro-animación en el elemento y luego navegar a /categorias
+  async openCategory(category: string, el: any) {
+    try {
+      // elemento DOM (puede venir como HTMLButtonElement o div)
+      const target = el || null;
+      if (target) {
+        const a = this.animationCtrl.create()
+          .addElement(target)
+          .duration(160)
+          .easing('cubic-bezier(0.2,0.8,0.2,1)')
+          .fromTo('transform', 'scale(1)', 'scale(0.96)')
+          .fromTo('boxShadow', '0 0 0 rgba(0,0,0,0)', '0 6px 18px rgba(0,0,0,0.2)');
+        await a.play();
+      }
+    } catch (e) {
+      // ignore animation errors
+    }
+    // small delay to allow the click feedback to be visible
+    setTimeout(() => {
+      this.router.navigate(['/categorias'], { state: { category }, queryParams: { category } });
+    }, 60);
   }
 
 }

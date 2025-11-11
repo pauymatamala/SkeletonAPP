@@ -13,12 +13,12 @@
   
   <div class="hero">
     <div class="hero-content">
-      <h1 #heroTitle class="hero-title">GameHub</h1>
-      <p class="hero-sub">Tu tienda de videojuegos — ofertas, novedades y clásicos.</p>
+      <h1 #heroTitle class="hero-title">Mundo Gamer</h1>
+      <p class="hero-sub">Tu universo de videojuegos en un solo lugar — ofertas, novedades y clásicos.</p>
 
       <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="search-form">
-        <ion-item class="search-item">
-          <ion-label position="floating">Buscar juegos (mínimo 3 caracteres)</ion-label>
+        <ion-item id="busqueda" class="search-item">
+          <ion-label position="floating">Buscar juegos</ion-label>
           <ion-input formControlName="query" type="text"></ion-input>
         </ion-item>
         <div class="search-actions">
@@ -27,6 +27,13 @@
       </form>
 
       <ion-button fill="clear" color="light" (click)="openGame(games[0])">Oferta destacada: {{ games[0].title }}</ion-button>
+
+      <!-- Lista de categorías (dentro del hero) -->
+      <div class="categories" aria-label="Categorias de juegos">
+        <div class="category-chip" *ngFor="let c of categories" (click)="openCategory(c, $event.currentTarget)" tabindex="0" role="button">
+          {{ c }}
+        </div>
+      </div>
     </div>
   </div>
 
