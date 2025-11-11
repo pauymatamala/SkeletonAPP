@@ -9,6 +9,9 @@
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
       <ion-title size="large">Home</ion-title>
     </ion-toolbar>
   </ion-header>
@@ -16,7 +19,7 @@
   <div id="container">
     <div>
       <div id="welcome-message">
-        <h1>!Bienvenido!</h1>
+        <h1 #welcomeTitle>!Bienvenido!</h1>
       </div>
       <div>
         <h6>Usuario: {{ username }}</h6>

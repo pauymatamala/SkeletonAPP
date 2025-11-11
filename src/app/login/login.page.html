@@ -18,17 +18,17 @@
         <p style="text-align:center">Por favor inicia sesión para continuar en la aplicación.</p>
 
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <ion-item>
+        <ion-item class="input-animated" #usernameItem>
           <ion-label position="stacked">Correo</ion-label>
-          <ion-input type="email" formControlName="username" autocomplete="off"></ion-input>
+          <ion-input #usernameInput type="email" formControlName="username" autocomplete="off" (ionFocus)="onInputFocus('username')" (ionBlur)="onInputBlur('username')"></ion-input>
         </ion-item>
         <ion-note color="danger" *ngIf="username.invalid && (username.dirty || username.touched)" style="margin-left:16px">
           Ingrese un correo electrónico válido.
         </ion-note>
 
-          <ion-item>
+          <ion-item class="input-animated" #passwordItem>
             <ion-label position="stacked">Contraseña</ion-label>
-            <ion-input [type]="passwordVisible ? 'text' : 'password'" formControlName="password"></ion-input>
+            <ion-input #passwordInput [type]="passwordVisible ? 'text' : 'password'" formControlName="password" (ionFocus)="onInputFocus('password')" (ionBlur)="onInputBlur('password')"></ion-input>
           </ion-item>
           <ion-note color="danger" *ngIf="password.invalid && (password.dirty || password.touched)" style="margin-left:16px">
             Contraseña requerida. Mínimo 6 caracteres.

@@ -1,0 +1,71 @@
+.hero {
+	background: linear-gradient(180deg, #0f172a 0%, #0b1220 100%);
+	color: #fff;
+	padding: 40px 16px;
+}
+.hero-content {
+	max-width: 960px;
+	margin: 0 auto;
+	text-align: center;
+}
+.hero-title {
+	font-size: 44px;
+	margin: 0 0 8px 0;
+	opacity: 0; /* el animation controller lo revelará */
+}
+.hero-sub {
+	margin: 0 0 16px 0;
+	color: #cbd5e1;
+}
+.search-form {
+	max-width: 640px;
+	margin: 12px auto 20px auto;
+}
+.search-item {
+	--background: rgba(255,255,255,0.04);
+	--border-radius: 10px;
+}
+.catalog {
+	padding: 24px 16px;
+	max-width: 1100px;
+	margin: 0 auto;
+}
+.cards {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 16px;
+}
+.card {
+	background: linear-gradient(180deg,#0b1220 0%, #0f172a 100%);
+	color: #fff;
+	border-radius: 12px;
+	overflow: hidden;
+	cursor: pointer;
+	box-shadow: 0 6px 20px rgba(2,6,23,0.5);
+	transform: translateY(10px);
+	opacity: 0;
+	transition: transform 420ms cubic-bezier(.2,.8,.2,1), opacity 420ms ease, box-shadow 220ms ease;
+}
+.card:hover, .card:focus {
+	transform: translateY(0) scale(1.02);
+	box-shadow: 0 14px 40px rgba(2,6,23,0.6);
+}
+.card-art {
+	height: 120px;
+	background: linear-gradient(135deg,#1f2937,#111827);
+}
+.card-body {
+	padding: 12px;
+}
+.card h3 { margin: 0 0 6px 0; font-size: 16px; }
+.card .tag { font-size: 12px; color: #9ca3af; }
+.card .price { margin-top: 8px; font-weight: 700; }
+
+/* Mostrar cards con small delay usando nth-child */
+.cards .card:nth-child(1){ transition-delay: 0ms; }
+.cards .card:nth-child(2){ transition-delay: 80ms; }
+.cards .card:nth-child(3){ transition-delay: 160ms; }
+.cards .card:nth-child(4){ transition-delay: 240ms; }
+
+/* cuando la página entra, activamos la clase .visible en JS para revelar elementos */
+.card.visible { transform: translateY(0); opacity: 1; }

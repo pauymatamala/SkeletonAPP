@@ -12,6 +12,18 @@
   text-align: center;
 }
 
+/* Animación: por defecto el título está oculto y desplazado; se activa la clase .visible */
+#welcome-message h1 {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 600ms cubic-bezier(0.36,0.66,0.04,1), transform 600ms cubic-bezier(0.36,0.66,0.04,1);
+}
+
+#welcome-message h1.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 #container strong {
   font-size: 20px;
   line-height: 26px;
@@ -44,4 +56,13 @@
   margin: 0 0 12px 0;
 }
 
+ion-menu::part(backdrop) {
+  background-color: rgba(255, 0, 255, 0.5);
+}
+
+ion-menu::part(container) {
+  border-radius: 0 20px 20px 0;
+
+  box-shadow: 4px 0px 16px rgba(255, 0, 255, 0.18);
+}
 

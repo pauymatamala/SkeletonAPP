@@ -34,7 +34,8 @@
 
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import "@ionic/angular/css/palettes/dark.system.css";
+/* Desactivado para evitar tema oscuro automático que provoca fondo negro en algunas pantallas */
+/* @import "@ionic/angular/css/palettes/dark.system.css"; */
 
 /* Angular Material prebuilt theme (indigo-pink) */
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";

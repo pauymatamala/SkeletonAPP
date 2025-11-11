@@ -1,0 +1,20 @@
+
+/* Input focus animations: transition + fallback shadow/scale */
+.input-animated ion-input,
+.input-animated {
+	transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.input-animated.focused,
+.input-animated ion-input.focused {
+	/* Evitar transforms que provoquen recortes del texto dentro del native input. */
+	transform: none !important;
+	box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+	border-radius: 8px;
+}
+
+.input-animated ion-input::part(native) {
+	transition: box-shadow 160ms ease, background 160ms ease;
+	/* Asegurar que el input nativo no se recorte y tenga espacio visible */
+	padding-left: 8px;
+}

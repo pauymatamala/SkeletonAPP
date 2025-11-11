@@ -4,10 +4,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { LoginPageRoutingModule } from './login-routing.module';
-import { MaterialModule } from '../material.module';
+import { PortadaPageRoutingModule } from './portada-routing.module';
 
-import { LoginPage } from './login.page';
+import { PortadaPage } from './portada.page';
+import { MaterialModule } from '../material.module';
 
 @NgModule({
   imports: [
@@ -16,8 +16,8 @@ import { LoginPage } from './login.page';
     ReactiveFormsModule,
     IonicModule,
     MaterialModule,
-    LoginPageRoutingModule,
+    PortadaPageRoutingModule
   ],
-  declarations: [LoginPage]
+  declarations: [PortadaPage]
 })
-export class LoginPageModule {}
+export class PortadaPageModule {}

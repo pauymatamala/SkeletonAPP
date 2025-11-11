@@ -1,0 +1,46 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>portada</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">portada</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  
+  <div class="hero">
+    <div class="hero-content">
+      <h1 #heroTitle class="hero-title">GameHub</h1>
+      <p class="hero-sub">Tu tienda de videojuegos — ofertas, novedades y clásicos.</p>
+
+      <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="search-form">
+        <ion-item class="search-item">
+          <ion-label position="floating">Buscar juegos (mínimo 3 caracteres)</ion-label>
+          <ion-input formControlName="query" type="text"></ion-input>
+        </ion-item>
+        <div class="search-actions">
+          <ion-button type="submit" expand="block" color="primary">Buscar</ion-button>
+        </div>
+      </form>
+
+      <ion-button fill="clear" color="light" (click)="openGame(games[0])">Oferta destacada: {{ games[0].title }}</ion-button>
+    </div>
+  </div>
+
+  <div class="catalog">
+    <h2>Novedades</h2>
+    <div class="cards">
+      <div class="card" *ngFor="let g of games" (click)="openGame(g)" tabindex="0">
+        <div class="card-art" aria-hidden="true"></div>
+        <div class="card-body">
+          <h3>{{ g.title }}</h3>
+          <p class="tag">{{ g.tag }}</p>
+          <div class="price">{{ g.price }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

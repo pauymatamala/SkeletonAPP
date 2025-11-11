@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IonicModule, AlertController, ToastController } from '@ionic/angular';
+import { IonicModule, AlertController, ToastController, AnimationController } from '@ionic/angular';
 import { Router } from '@angular/router';
 
 @Component({
@@ -15,13 +15,18 @@ export class LoginPage implements OnInit {
   loginForm: FormGroup;
   passwordVisible = false;
 
-  constructor(private fb: FormBuilder, private router: Router) {
-  this.loginForm = this.fb.group({
-    username: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]]
-  });
-  }
   
+  
+  @ViewChild('usernameInput', { read: ElementRef, static: false }) usernameInput!: ElementRef;
+  @ViewChild('passwordInput', { read: ElementRef, static: false }) passwordInput!: ElementRef;
+
+  // inyectamos creación de animaciones y formbuilder
+  constructor(private fb: FormBuilder, private router: Router, private animationCtrl: AnimationController) {
+    this.loginForm = this.fb.group({
+      username: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
+    });
+  }
 
   ngOnInit() {
   }
@@ -38,8 +43,8 @@ export class LoginPage implements OnInit {
   const user = this.loginForm.value.username;
   // Guardar usuario para persistencia como objeto JSON { username }
   localStorage.setItem('currentUser', JSON.stringify({ username: user }));
-  // Navegar a Home pasando el usuario en state
-  this.router.navigate(['/home'], { state: { username: user } });
+  // Navegar a Portada pasando el usuario en state
+  this.router.navigate(['/portada'], { state: { username: user }, queryParams: { username: user } });
   }
 
   // Ir a la página de registro al presionar el botón "Crear usuario"
@@ -158,6 +163,30 @@ export class LoginPage implements OnInit {
     ];
     document.body.appendChild(alertEl);
     await alertEl.present();
+  }
+
+  // Animaciones de foco para inputs (Ionic AnimationController + CSS fallback)
+  onInputFocus(field: 'username' | 'password') {
+    const el = field === 'username' ? this.usernameInput : this.passwordInput;
+    if (!el || !el.nativeElement) return;
+    try {
+      // Añadir clase al contenedor .input-animated (no al ion-input) para evitar clipping
+      const parent = el.nativeElement.closest('.input-animated');
+      if (parent) parent.classList.add('focused');
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  onInputBlur(field: 'username' | 'password') {
+    const el = field === 'username' ? this.usernameInput : this.passwordInput;
+    if (!el || !el.nativeElement) return;
+    try {
+      const parent = el.nativeElement.closest('.input-animated');
+      if (parent) parent.classList.remove('focused');
+    } catch (e) {
+      // ignore
+    }
   }
 
 }
