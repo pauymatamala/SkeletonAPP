@@ -93,7 +93,7 @@ export class CategoriasPage implements OnInit {
       { id: 'r5', title: 'Crystal Forge', price: '$27.990' }
     ],
     'Carreras': [
-      { id: 'c1', title: 'Speed Racer X', price: '$19.990' },
+      { id: 'c1', title: 'Speed Racer X', price: '$19.990', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRTEwvq1ygvThBZHx4cNZ3dU1zd_knXuiEbQ&s' },
       { id: 'c2', title: 'Turbo Drift', price: '$24.990' },
       { id: 'c3', title: 'Neon Circuit', price: '$29.990' },
       { id: 'c4', title: 'Urban Rush', price: '$14.990' },
@@ -143,10 +143,38 @@ export class CategoriasPage implements OnInit {
     ]
   };
 
+
+    // Fallback simple para imágenes que no carguen
+    onImgError(ev: Event) {
+      try {
+        const img = ev.target as HTMLImageElement;
+        if (img) {
+          img.src = 'https://picsum.photos/seed/placeholder/640/360';
+        }
+      } catch (e) {
+        // ignore
+      }
+    }
   displayedGames: any[] = [];
 
   // lista de categorías (coincide con portada)
   categories = ['Acción', 'RPG', 'Carreras', 'Casual', 'Indie', 'Estrategia', 'Aventura', 'Deportes', 'Simulación'];
+
+  // Mapa de imágenes por categoría. No rellenado por defecto.
+  // Cuando me proporciones la URL directa de la imagen (o la subas a assets),
+  // asigna la ruta aquí (por ejemplo: 'assets/games/drift.jpg' o la URL directa).
+  categoryImages: Record<string, string> = {
+    'Acción': 'https://cdn.cloudflare.steamstatic.com/steam/apps/2566580/capsule_616x353.jpg?t=1700782083',
+    'RPG': 'https://cdn.cloudflare.steamstatic.com/steam/apps/1517290/capsule_616x353.jpg?t=1698192043',
+    'Carreras': 'https://play-lh.googleusercontent.com/HXoSbz87wD8eUFnDkBKoQfe5oeo8HZXEsnQfYCNREy_tsqHheVcT6dKcUaXpSE2r6Q=w526-h296-rw',
+    'Casual': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYRIb5Pli6ZSiOG0QJqlAjBLkCKnkGohdh6w&s',
+    'Indie': 'https://cdn.hobbyconsolas.com/sites/navi.axelspringer.es/public/media/image/2020/12/juegos-indie-esperados-2021-2183387.jpg?tf=3840x',
+    'Estrategia': 'https://cdn.ligadegamers.com/imagenes/mejores-juegos-estrategia-pc-og.jpg',
+    'Aventura': 'https://i.blogs.es/ab965a/nintendoswitch_tlozbreathofthewild_artwork_illustration_01.0/1366_2000.jpeg',
+    'Deportes': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfygtOUkY_DgIyl2JMUcX7KqSmXVcsIOXC_w&s',
+    'Simulación': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAZozfN-a8mhYT-K-bpBO1enJPBAkptVI87Q&s'
+  
+  };
 
   // animación de feedback al seleccionar una categoría
   async tapCategory(cat: string, el: any) {

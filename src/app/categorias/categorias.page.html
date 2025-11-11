@@ -18,7 +18,10 @@
     <div class="categories-grid">
       <div class="cat-card hidden" #catCard *ngFor="let c of categories" (click)="tapCategory(c, $event.currentTarget)" tabindex="0" role="button" aria-label="Categoria {{ c }}">
         <div class="cat-card-inner">
-          <div class="cat-icon" aria-hidden="true"></div>
+          <div class="cat-icon" aria-hidden="true">
+            <!-- Si existe una imagen para la categoría, muéstrala; si no, queda el fondo/placeholder -->
+            <img *ngIf="categoryImages[c]" [src]="categoryImages[c]" (error)="onImgError($event)" alt="{{ c }}">
+          </div>
           <div class="cat-name">{{ c }}</div>
         </div>
       </div>
@@ -33,7 +36,9 @@
       <h3 class="games-title">Juegos en {{ selectedCategory }}</h3>
       <div class="games-grid">
         <div class="game-card" *ngFor="let g of displayedGames">
-          <div class="game-art" aria-hidden="true"></div>
+          <div class="game-art">
+            <img [src]="g.image || 'https://picsum.photos/seed/placeholder/640/360'" (error)="onImgError($event)" alt="{{ g.title }}">
+          </div>
           <div class="game-info">
             <h4>{{ g.title }}</h4>
             <div class="price">{{ g.price }}</div>
