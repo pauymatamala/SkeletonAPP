@@ -94,10 +94,10 @@ export class CategoriasPage implements OnInit {
     ],
     'Carreras': [
       { id: 'c1', title: 'Speed Racer X', price: '$19.990', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRTEwvq1ygvThBZHx4cNZ3dU1zd_knXuiEbQ&s' },
-      { id: 'c2', title: 'Turbo Drift', price: '$24.990' },
-      { id: 'c3', title: 'Neon Circuit', price: '$29.990' },
-      { id: 'c4', title: 'Urban Rush', price: '$14.990' },
-      { id: 'c5', title: 'Track Master', price: '$34.990' }
+      { id: 'c2', title: 'Turbo Drift', price: '$24.990', image: 'https://play-lh.googleusercontent.com/px4Ni6wy5yei9_iOvX3Nl2ec-ACl_icJlm6uGGTcb_1CAwPneg7P8zfK2oTIL2iX-ii_=w526-h296-rw' },
+      { id: 'c3', title: 'Neon Circuit', price: '$29.990', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrHoUR_zzBBCuinJ12e_peUXeeSnHLoG-icA&s' },
+      { id: 'c4', title: 'Urban Rush', price: '$14.990', Image: 'https://play-lh.googleusercontent.com/sSZXgNbHoSVNYmzWsJ8oXkAwTWqbQQItexwtCDtBaINLi_NqdFpyMRI2v4waZvm_4Kc=w240-h480-rw' },
+      { id: 'c5', title: 'Track Master', price: '$34.990', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPkCs8at7s4jfnbyqtKPwHpW00GgUK8NiRog&s' }
     ],
     'Casual': [
       { id: 'cs1', title: 'Mystic Farms', price: '$9.990' },
