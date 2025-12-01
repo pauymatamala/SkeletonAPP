@@ -1,0 +1,5 @@
+<button class="profile-btn" (click)="onClick()" aria-label="Ir a inicio" type="button">
+  <ion-avatar [ngStyle]="{'width.px': size, 'height.px': size}">
+    <img [src]="src || fallback" (error)="onImgError($event)" [alt]="alt" />
+  </ion-avatar>
+</button>

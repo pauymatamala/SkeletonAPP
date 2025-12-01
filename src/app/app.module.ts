@@ -6,6 +6,7 @@ import { RouteReuseStrategy } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
 import { AppComponent } from './app.component';
+import { ProfileAvatarComponent } from './shared/profile-avatar/profile-avatar.component';
 import { AppRoutingModule } from './app-routing.module';
 import { MaterialModule } from './material.module';
 

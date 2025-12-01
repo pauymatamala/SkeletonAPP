@@ -54,40 +54,30 @@
 	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 	gap: 16px;
 }
-.card {
-	background: linear-gradient(180deg,#0b1220 0%, #0f172a 100%);
-	color: #fff;
-	border-radius: 12px;
-	overflow: hidden;
-	cursor: pointer;
-	box-shadow: 0 6px 20px rgba(2,6,23,0.5);
-	transform: translateY(10px);
-	opacity: 0;
-	transition: transform 420ms cubic-bezier(.2,.8,.2,1), opacity 420ms ease, box-shadow 220ms ease;
+.cards ion-card {
+  background: linear-gradient(180deg,#0b1220 0%, #0f172a 100%);
+  color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(2,6,23,0.5);
+  transform: translateY(6px);
+  opacity: 1;
 }
-.card:hover, .card:focus {
-	transform: translateY(0) scale(1.02);
-	box-shadow: 0 14px 40px rgba(2,6,23,0.6);
-}
-.card-art {
-	height: 120px;
-	background: linear-gradient(135deg,#1f2937,#111827);
-}
-.card-body {
-	padding: 12px;
-}
-.card h3 { margin: 0 0 6px 0; font-size: 16px; }
-.card .tag { font-size: 12px; color: #9ca3af; }
-.card .price { margin-top: 8px; font-weight: 700; }
+.cards ion-card:hover { transform: translateY(0) scale(1.02); box-shadow: 0 14px 40px rgba(2,6,23,0.6); }
+.cards ion-card ion-img { height: 140px; width: 100%; object-fit: cover; display: block; }
+.cards ion-card ion-card-header { padding: 10px 12px 6px 12px; }
+.cards ion-card ion-card-content { padding: 8px 12px 14px 12px; }
 
-/* Mostrar cards con small delay usando nth-child */
-.cards .card:nth-child(1){ transition-delay: 0ms; }
-.cards .card:nth-child(2){ transition-delay: 80ms; }
-.cards .card:nth-child(3){ transition-delay: 160ms; }
-.cards .card:nth-child(4){ transition-delay: 240ms; }
 
-/* cuando la página entra, activamos la clase .visible en JS para revelar elementos */
-.card.visible { transform: translateY(0); opacity: 1; }
+/* pequeñas transiciones para tarjetas */
+.cards ion-card:nth-child(1){ transition-delay: 0ms; }
+.cards ion-card:nth-child(2){ transition-delay: 80ms; }
+.cards ion-card:nth-child(3){ transition-delay: 160ms; }
+.cards ion-card:nth-child(4){ transition-delay: 240ms; }
+
+/* cuando la página entra, la clase .visible puede ser usada si procede */
+.cards ion-card.visible { transform: translateY(0); opacity: 1; }
 
 #busqueda {
 

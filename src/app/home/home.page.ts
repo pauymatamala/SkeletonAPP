@@ -19,6 +19,9 @@ export class HomePage implements OnInit {
   telefono: string | null = null;
 
   @ViewChild('welcomeTitle', { read: ElementRef, static: false }) welcomeTitle!: ElementRef;
+  @ViewChild('avatarInput', { read: ElementRef, static: false }) avatarInput!: ElementRef;
+
+  profileImage: string | null = null;
 
   // Inyectar AnimationController para animaciones Ionic
   constructor(private router: Router, private route: ActivatedRoute, private animationCtrl: AnimationController) {}
@@ -109,6 +112,87 @@ export class HomePage implements OnInit {
 
     // también reproducir animación Ionic como fallback
     this.playTitleAnimation();
+
+    // leer imagen de perfil desde localStorage (si existe)
+    try {
+      const u = localStorage.getItem('currentUser');
+      if (u) {
+        const parsed = JSON.parse(u);
+        this.profileImage = parsed?.image || parsed?.avatar || null;
+      } else {
+        this.profileImage = null;
+      }
+    } catch (err) {
+      this.profileImage = null;
+    }
+  }
+
+  openFilePicker() {
+    try {
+      if (this.avatarInput && this.avatarInput.nativeElement) {
+        this.avatarInput.nativeElement.click();
+      }
+    } catch (e) {
+      console.error('No se pudo abrir el selector de archivos', e);
+    }
+  }
+
+  onFileSelected(event: Event) {
+    try {
+      const input = event.target as HTMLInputElement;
+      if (!input.files || input.files.length === 0) return;
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = reader.result as string;
+        this.profileImage = dataUrl;
+        try {
+          const cur = localStorage.getItem('currentUser');
+          let obj: any = cur ? JSON.parse(cur) : {};
+          obj.image = dataUrl;
+          localStorage.setItem('currentUser', JSON.stringify(obj));
+          // pequeña animación de feedback en el avatar
+          this.animateAvatarPulse();
+        } catch (err) {
+          // aún así intentamos animar avatar
+          this.animateAvatarPulse();
+          // ignore storage errors
+        }
+      };
+      reader.readAsDataURL(file);
+    } catch (e) {
+      console.error('Error leyendo archivo', e);
+    }
+  }
+
+  /**
+   * animateAvatarPulse: animación breve para dar feedback cuando el avatar cambia.
+   */
+  private animateAvatarPulse() {
+    try {
+      const el = document.querySelector('app-profile-avatar');
+      if (!el) return;
+      const a = this.animationCtrl.create()
+        .addElement(el)
+        .duration(420)
+        .easing('cubic-bezier(.2,.8,.2,1)')
+        .keyframes([
+          { offset: 0, transform: 'scale(1)' },
+          { offset: 0.5, transform: 'scale(1.08)' },
+          { offset: 1, transform: 'scale(1)' }
+        ]);
+      a.play();
+    } catch (e) {
+      // ignore animation errors
+    }
+  }
+
+  goHome() {
+    try {
+      this.router.navigate(['/home']);
+    } catch (e) {
+      // ignore
+    }
   }
 
   private async playTitleAnimation() {

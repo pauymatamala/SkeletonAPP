@@ -1,30 +1,49 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>categorias</ion-title>
-  </ion-toolbar>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button menu="main-menu" aria-label="Abrir menú"></ion-menu-button>
+      </ion-buttons>
+      <ion-title>categorias</ion-title>
+    <ion-buttons slot="end">
+      <app-profile-avatar [src]="profileImage" (clicked)="goHome()"></app-profile-avatar>
+    </ion-buttons>
+    </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">categorias</ion-title>
+      <ion-buttons slot="end">
+        <app-profile-avatar [src]="profileImage" (clicked)="goHome()"></app-profile-avatar>
+      </ion-buttons>
     </ion-toolbar>
   </ion-header>
+  <!--ion-refresher: refresca la pantalla; slot="fixed": refresca el contenido sin importar el scroll-->
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <!--pullingIcon="chevron-down-circle-outline": ícono que aparece al jalar para refrescar-->
+    <ion-refresher-content pullingIcon="chevron-down-circle-outline"></ion-refresher-content>
+  </ion-refresher>
+  <!-- Barra de búsqueda de Ionic: filtra los resultados de la categoría seleccionada -->
+  <div class="toolbar-search">
+    <ion-searchbar placeholder="Buscar juegos..." [(ngModel)]="searchTerm" (ionInput)="filterDisplayedGames()"></ion-searchbar>
+  </div>
+
   <div class="page-frame">
     <div class="container">
     <h2 #catTitle class="cat-title">{{ selectedCategory ? ('Categoría: ' + selectedCategory) : 'Explora por categorías' }}</h2>
     <p class="hint">Toca una categoría para navegar.</p>
 
+    <!-- Grid responsivo de categorías usando ion-card -->
     <div class="categories-grid">
-      <div class="cat-card hidden" #catCard *ngFor="let c of categories" (click)="tapCategory(c, $event.currentTarget)" tabindex="0" role="button" aria-label="Categoria {{ c }}">
-        <div class="cat-card-inner">
-          <div class="cat-icon" aria-hidden="true">
-            <!-- Si existe una imagen para la categoría, muéstrala; si no, queda el fondo/placeholder -->
+      <ion-card *ngFor="let c of categories" (click)="tapCategory(c, $event.currentTarget)" button aria-label="Categoria {{ c }}">
+        <ion-item lines="none">
+          <ion-avatar slot="start">
             <img *ngIf="categoryImages[c]" [src]="categoryImages[c]" (error)="onImgError($event)" alt="{{ c }}">
-          </div>
-          <div class="cat-name">{{ c }}</div>
-        </div>
-      </div>
+          </ion-avatar>
+          <ion-label>{{ c }}</ion-label>
+        </ion-item>
+      </ion-card>
     </div>
 
     <div class="selection-note" *ngIf="selectedCategory">
@@ -35,15 +54,16 @@
     <div class="games-list" *ngIf="displayedGames && displayedGames.length">
       <h3 class="games-title">Juegos en {{ selectedCategory }}</h3>
       <div class="games-grid">
-        <div class="game-card" *ngFor="let g of displayedGames">
-          <div class="game-art">
-            <img [src]="g.image || 'https://picsum.photos/seed/placeholder/640/360'" (error)="onImgError($event)" alt="{{ g.title }}">
-          </div>
-          <div class="game-info">
-            <h4>{{ g.title }}</h4>
+        <!-- Cada tarjeta de juego convertida a ion-card -->
+        <ion-card *ngFor="let g of displayedGames" button>
+          <ion-img [src]="g.image || 'https://picsum.photos/seed/placeholder/640/360'" (error)="onImgError($event)" alt="{{ g.title }}"></ion-img>
+          <ion-card-header>
+            <ion-card-title>{{ g.title }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
             <div class="price">{{ g.price }}</div>
-          </div>
-        </div>
+          </ion-card-content>
+        </ion-card>
       </div>
     </div>
   </div>

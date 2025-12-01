@@ -17,13 +17,14 @@ export class LoginPage implements OnInit {
 
   
   
-  @ViewChild('usernameInput', { read: ElementRef, static: false }) usernameInput!: ElementRef;
+  @ViewChild('usernameInput', { read: ElementRef, static: false }) usernameInput!: ElementRef; // input for email (kept ref name for template)
   @ViewChild('passwordInput', { read: ElementRef, static: false }) passwordInput!: ElementRef;
 
   // inyectamos creación de animaciones y formbuilder
   constructor(private fb: FormBuilder, private router: Router, private animationCtrl: AnimationController) {
     this.loginForm = this.fb.group({
-      username: ['', [Validators.required, Validators.email]],
+      // Use email as user identifier
+      email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
@@ -31,7 +32,7 @@ export class LoginPage implements OnInit {
   ngOnInit() {
   }
 
-  get username() { return this.loginForm.get('username')!; }
+  get email() { return this.loginForm.get('email')!; }
   get password() { return this.loginForm.get('password')!; }
 
   onSubmit() {
@@ -39,12 +40,18 @@ export class LoginPage implements OnInit {
       this.loginForm.markAllAsTouched();
       return;
     }
-
-  const user = this.loginForm.value.username;
-  // Guardar usuario para persistencia como objeto JSON { username }
-  localStorage.setItem('currentUser', JSON.stringify({ username: user }));
-  // Navegar a Portada pasando el usuario en state
-  this.router.navigate(['/portada'], { state: { username: user }, queryParams: { username: user } });
+  const email = this.loginForm.value.email;
+  // Guardar usuario para persistencia como objeto JSON { email }
+  try {
+    const cur = localStorage.getItem('currentUser');
+    const obj = cur ? JSON.parse(cur) : {};
+    obj.email = email;
+    localStorage.setItem('currentUser', JSON.stringify(obj));
+  } catch (e) {
+    localStorage.setItem('currentUser', JSON.stringify({ email }));
+  }
+  // Navegar a Portada pasando el email en state
+  this.router.navigate(['/portada'], { state: { email }, queryParams: { email } });
   }
 
   // Ir a la página de registro al presionar el botón "Crear usuario"
@@ -58,7 +65,7 @@ export class LoginPage implements OnInit {
       this.loginForm.markAllAsTouched();
       return;
     }
-    const user = this.loginForm.value.username;
+    const user = this.loginForm.value.email;
     const pass = this.loginForm.value.password;
     const usersJson = localStorage.getItem('users');
     const users = usersJson ? JSON.parse(usersJson) : {};
@@ -86,9 +93,9 @@ export class LoginPage implements OnInit {
     alertEl.header = 'Recuperar contraseña';
     alertEl.inputs = [
       {
-        name: 'username',
-        type: 'text',
-        placeholder: 'Ingresa tu usuario'
+        name: 'email',
+        type: 'email',
+        placeholder: 'Ingresa tu correo'
       }
     ];
     alertEl.buttons = [
@@ -98,10 +105,10 @@ export class LoginPage implements OnInit {
       },
       {
         text: 'Buscar',
-        handler: async (data: any) => {
+          handler: async (data: any) => {
           const usersJson = localStorage.getItem('users');
           const users = usersJson ? JSON.parse(usersJson) : {};
-          const found = users[data.username];
+          const found = users[data.email];
           if (!found) {
             const a = document.createElement('ion-alert');
             a.header = 'No encontrado';
@@ -141,7 +148,7 @@ export class LoginPage implements OnInit {
                         await e.present();
                         return;
                       }
-                      users[data.username] = np;
+                      users[data.email] = np;
                       localStorage.setItem('users', JSON.stringify(users));
                       const t = document.createElement('ion-toast');
                       t.message = 'Contraseña actualizada';
@@ -166,8 +173,8 @@ export class LoginPage implements OnInit {
   }
 
   // Animaciones de foco para inputs (Ionic AnimationController + CSS fallback)
-  onInputFocus(field: 'username' | 'password') {
-    const el = field === 'username' ? this.usernameInput : this.passwordInput;
+  onInputFocus(field: 'email' | 'password') {
+    const el = field === 'email' ? this.usernameInput : this.passwordInput;
     if (!el || !el.nativeElement) return;
     try {
       // Añadir clase al contenedor .input-animated (no al ion-input) para evitar clipping
@@ -178,8 +185,8 @@ export class LoginPage implements OnInit {
     }
   }
 
-  onInputBlur(field: 'username' | 'password') {
-    const el = field === 'username' ? this.usernameInput : this.passwordInput;
+  onInputBlur(field: 'email' | 'password') {
+    const el = field === 'email' ? this.usernameInput : this.passwordInput;
     if (!el || !el.nativeElement) return;
     try {
       const parent = el.nativeElement.closest('.input-animated');

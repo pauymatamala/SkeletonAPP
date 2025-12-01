@@ -1,5 +1,5 @@
 import { Component, OnInit, ElementRef, ViewChild, ViewChildren, QueryList } from '@angular/core';
-import { AnimationController } from '@ionic/angular';
+import { AnimationController, LoadingController } from '@ionic/angular';
 import { Router } from '@angular/router';
 
 @Component({
@@ -12,12 +12,56 @@ export class CategoriasPage implements OnInit {
 
   @ViewChild('catTitle', { read: ElementRef, static: false }) catTitle!: ElementRef;
   @ViewChildren('catCard', { read: ElementRef }) catCards!: QueryList<ElementRef>;
+  // texto de la categoría seleccionada
   selectedCategory: string | null = null;
 
-  constructor(private animationCtrl: AnimationController, private router: Router) { }
+  // término de búsqueda para filtrar juegos
+  // Texto ingresado en la barra de búsqueda. Se usa para filtrar los juegos mostrados.
+  searchTerm: string = '';
+  // inyectar router y controlador de animaciones
+  /**
+   * Constructor: inyecta controladores de animación, navegación y loading de Ionic.
+   * LoadingController se usa para mostrar un indicador breve cuando el usuario selecciona una categoría.
+   */
+  constructor(private animationCtrl: AnimationController, private router: Router, private loadingCtrl: LoadingController) { }
 
   ngOnInit() {
   }
+
+  /**
+   * animateGamesEntrance: aplica una animación en cascada (stagger) a las tarjetas
+   * dentro de `.games-grid` para mejorar la percepción cuando aparecen los juegos.
+   */
+  animateGamesEntrance() {
+    try {
+      const cards = Array.from(document.querySelectorAll('.games-grid ion-card')) as HTMLElement[];
+      if (!cards || cards.length === 0) return;
+      cards.forEach((card, i) => {
+        try {
+          const a = this.animationCtrl.create()
+            .addElement(card)
+            .duration(360)
+            .easing('cubic-bezier(.2,.8,.2,1)')
+            .fromTo('opacity', '0', '1')
+            .fromTo('transform', 'translateY(12px)', 'translateY(0)');
+          setTimeout(() => a.play(), i * 80);
+        } catch (err) {
+          // ignore
+        }
+      });
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  /**
+   * ionViewDidEnter: inicializa la vista cada vez que la página entra en primer plano.
+   * - Recupera una categoría pasada por `NavigationExtras.state` (si existe)
+   * - Reproduce la animación del título
+   * - Revela las tarjetas de categoría con animación escalonada
+   * - Carga la lista de juegos de la categoría seleccionada (si aplica)
+   * - Recupera la imagen de perfil desde localStorage (demo)
+   */
 
   ionViewDidEnter() {
     // leer category desde navigation state (fallback a null)
@@ -74,6 +118,49 @@ export class CategoriasPage implements OnInit {
     } catch (e) {
       this.displayedGames = [];
     }
+
+    // leer imagen de perfil guardada en localStorage (si existe)
+    try {
+      const u = localStorage.getItem('currentUser');
+      if (u) {
+        const parsed = JSON.parse(u);
+        this.profileImage = parsed?.image || parsed?.avatar || null;
+      } else {
+        this.profileImage = null;
+      }
+    } catch (err) {
+      this.profileImage = null;
+    }
+  }
+
+  /**
+   * filterDisplayedGames: filtra `displayedGames` usando `searchTerm`.
+   * - Si no hay término o no hay categoría seleccionada, restaura la lista completa.
+   * - Filtrado sencillo por coincidencia en el título (case-insensitive).
+   * Nota: para listas grandes conviene añadir debounce o filtrado en backend.
+   */
+  filterDisplayedGames() {
+    if (!this.searchTerm || !this.selectedCategory) {
+      this.displayedGames = this.selectedCategory ? this.gamesByCategory[this.selectedCategory] || [] : [];
+      return;
+    }
+    const term = this.searchTerm.toLowerCase();
+    const all = this.gamesByCategory[this.selectedCategory] || [];
+    this.displayedGames = all.filter(g => (g.title || '').toLowerCase().includes(term));
+  }
+
+  /**
+   * doRefresh: manejador para `ion-refresher`.
+   * Simula la recarga de contenido y completa el refresher cuando termina.
+   * En un escenario real reemplazar `setTimeout` por la llamada a la API.
+   */
+  doRefresh(event: any) {
+    setTimeout(() => {
+      if (this.selectedCategory) {
+        this.displayedGames = this.gamesByCategory[this.selectedCategory] || [];
+      }
+      event.detail.complete();
+    }, 700);
   }
 
   // --- Mostrar 5 juegos por categoría (dataset local, demo) ---
@@ -144,18 +231,25 @@ export class CategoriasPage implements OnInit {
   };
 
 
-    // Fallback simple para imágenes que no carguen
-    onImgError(ev: Event) {
-      try {
-        const img = ev.target as HTMLImageElement;
-        if (img) {
-          img.src = 'https://picsum.photos/seed/placeholder/640/360';
-        }
-      } catch (e) {
-        // ignore
+  /**
+   * onImgError: fallback para imágenes que fallen al cargar.
+   * Reemplaza la imagen rota por un placeholder remoto (demo).
+   * En producción conviene usar assets locales para evitar CORS/expiración.
+   */
+  onImgError(ev: Event) {
+    try {
+      const img = ev.target as HTMLImageElement;
+      if (img) {
+        img.src = 'https://picsum.photos/seed/placeholder/640/360';
       }
+    } catch (e) {
+      // ignore
     }
+  }
   displayedGames: any[] = [];
+
+  // imagen de perfil para el avatar (se lee de localStorage si existe)
+  profileImage: string | null = null;
 
   // lista de categorías (coincide con portada)
   categories = ['Acción', 'RPG', 'Carreras', 'Casual', 'Indie', 'Estrategia', 'Aventura', 'Deportes', 'Simulación'];
@@ -176,7 +270,12 @@ export class CategoriasPage implements OnInit {
   
   };
 
-  // animación de feedback al seleccionar una categoría
+  /**
+   * tapCategory: efecto al tocar una categoría.
+   * - Ejecuta una animación de feedback (scale + sombra)
+   * - Marca la categoría como seleccionada
+   * - Muestra un `ion-loading` breve mientras se cargan los juegos
+   */
   async tapCategory(cat: string, el: any) {
     try {
       const element = (el as HTMLElement) || null;
@@ -194,7 +293,46 @@ export class CategoriasPage implements OnInit {
     }
     // mantener seleccionado y (opcional) filtrar o navegar
     this.selectedCategory = cat;
-    // actualizar lista mostrada
-    this.displayedGames = this.gamesByCategory[this.selectedCategory] || [];
+    // mostrar loading breve mientras cargamos los juegos
+    try {
+      const loader = await this.loadingCtrl.create({ message: 'Cargando juegos...' });
+      await loader.present();
+      // simular carga y asignar
+      setTimeout(async () => {
+        // Usar la variable `cat` (parámetro) en vez de `this.selectedCategory`
+        // así evitamos problemas de tipo dentro del callback asincrónico.
+        this.displayedGames = this.gamesByCategory[cat] || [];
+        await loader.dismiss();
+        // dar un tick para que Angular renderice la sección y luego desplazar suavemente
+        setTimeout(() => {
+          try {
+            const el = document.querySelector('.games-title');
+            if (el) {
+              (el as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          } catch (err) {
+            // ignore scrolling errors
+          }
+          // luego reproducir animación en cascada de las tarjetas de juego
+          this.animateGamesEntrance();
+        }, 80);
+      }, 600);
+    } catch (e) {
+      // fallback sin loader (usar `cat` que siempre es un string válido aquí)
+      this.displayedGames = this.gamesByCategory[cat] || [];
+    }
   }
+
+  /**
+   * goHome: navegación programática a la página `home`.
+   * Usado por el avatar cuando el usuario quiere regresar al inicio.
+   */
+  goHome() {
+    try {
+      this.router.navigate(['/home'], { state: { from: 'categorias' } });
+    } catch (e) {
+      // ignore
+    }
+  }
+
 }

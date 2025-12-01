@@ -8,6 +8,7 @@ import { PortadaPageRoutingModule } from './portada-routing.module';
 
 import { PortadaPage } from './portada.page';
 import { MaterialModule } from '../material.module';
+import { ProfileAvatarComponent } from '../shared/profile-avatar/profile-avatar.component';
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ import { MaterialModule } from '../material.module';
     ReactiveFormsModule,
     IonicModule,
     MaterialModule,
-    PortadaPageRoutingModule
+    PortadaPageRoutingModule,
+    ProfileAvatarComponent
   ],
   declarations: [PortadaPage]
 })

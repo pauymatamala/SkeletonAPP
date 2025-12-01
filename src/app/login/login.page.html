@@ -19,11 +19,12 @@
 
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <ion-item class="input-animated" #usernameItem>
-          <ion-label position="stacked">Correo</ion-label>
-          <ion-input #usernameInput type="email" formControlName="username" autocomplete="off" (ionFocus)="onInputFocus('username')" (ionBlur)="onInputBlur('username')"></ion-input>
+          <ion-label position="stacked">Correo electrónico</ion-label>
+          <ion-input #usernameInput type="email" formControlName="email" autocomplete="email" (ionFocus)="onInputFocus('email')" (ionBlur)="onInputBlur('email')"></ion-input>
         </ion-item>
-        <ion-note color="danger" *ngIf="username.invalid && (username.dirty || username.touched)" style="margin-left:16px">
-          Ingrese un correo electrónico válido.
+        <ion-note color="danger" *ngIf="email.invalid && (email.dirty || email.touched)" style="margin-left:16px">
+          <span *ngIf="email.errors?.['required']">Debes ingresar un correo.</span>
+          <span *ngIf="email.errors?.['email']">Ingresa un correo válido.</span>
         </ion-note>
 
           <ion-item class="input-animated" #passwordItem>
@@ -31,7 +32,8 @@
             <ion-input #passwordInput [type]="passwordVisible ? 'text' : 'password'" formControlName="password" (ionFocus)="onInputFocus('password')" (ionBlur)="onInputBlur('password')"></ion-input>
           </ion-item>
           <ion-note color="danger" *ngIf="password.invalid && (password.dirty || password.touched)" style="margin-left:16px">
-            Contraseña requerida. Mínimo 6 caracteres.
+            <span *ngIf="password.errors?.['required']">Contraseña requerida.</span>
+            <span *ngIf="password.errors?.['minlength']">Mínimo 6 caracteres.</span>
           </ion-note>
 
           <ion-button expand="block" type="submit" style="margin-top:16px">Ingresar</ion-button>

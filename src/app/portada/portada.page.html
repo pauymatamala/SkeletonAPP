@@ -1,6 +1,9 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>portada</ion-title>
+    <ion-buttons slot="end">
+      <app-profile-avatar [src]="profileImage" (clicked)="goHome()"></app-profile-avatar>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -8,6 +11,12 @@
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">portada</ion-title>
+      <ion-buttons slot="end">
+        <app-profile-avatar [src]="profileImage" (clicked)="goHome()"></app-profile-avatar>
+      </ion-buttons>
+      <ion-buttons slot="start">
+        <ion-menu-button menu="main-menu" aria-label="Abrir menú"></ion-menu-button>
+      </ion-buttons>
     </ion-toolbar>
   </ion-header>
   
@@ -40,14 +49,17 @@
   <div class="catalog">
     <h2>Novedades</h2>
     <div class="cards">
-      <div class="card" *ngFor="let g of games" (click)="openGame(g)" tabindex="0">
-        <div class="card-art" aria-hidden="true"></div>
-        <div class="card-body">
-          <h3>{{ g.title }}</h3>
-          <p class="tag">{{ g.tag }}</p>
+      <ion-card *ngFor="let g of games" (click)="openGame(g)" button>
+        <ion-img [src]="g.image || 'https://picsum.photos/seed/game/400/200'"></ion-img>
+        <ion-card-header>
+          <ion-card-title>{{ g.title }}</ion-card-title>
+          <ion-card-subtitle>{{ g.tag }}</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
           <div class="price">{{ g.price }}</div>
-        </div>
-      </div>
+        </ion-card-content>
+      </ion-card>
     </div>
   </div>
+
 </ion-content>
