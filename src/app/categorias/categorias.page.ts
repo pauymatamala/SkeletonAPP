@@ -1,6 +1,9 @@
 import { Component, OnInit, ElementRef, ViewChild, ViewChildren, QueryList } from '@angular/core';
 import { AnimationController, LoadingController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { DatabaseService } from '../core/database.service';
+import { Category } from '../models/category.model';
+import { Game } from '../models/game.model';
 
 @Component({
   selector: 'app-categorias',
@@ -23,7 +26,7 @@ export class CategoriasPage implements OnInit {
    * Constructor: inyecta controladores de animación, navegación y loading de Ionic.
    * LoadingController se usa para mostrar un indicador breve cuando el usuario selecciona una categoría.
    */
-  constructor(private animationCtrl: AnimationController, private router: Router, private loadingCtrl: LoadingController) { }
+  constructor(private animationCtrl: AnimationController, private router: Router, private loadingCtrl: LoadingController, private db: DatabaseService) { }
 
   ngOnInit() {
   }
@@ -108,16 +111,8 @@ export class CategoriasPage implements OnInit {
       });
     }, 220);
 
-    // cargar juegos por categoría si vino en el state o si tenemos selección previa
-    try {
-      if (this.selectedCategory) {
-        this.displayedGames = this.gamesByCategory[this.selectedCategory] || [];
-      } else {
-        this.displayedGames = [];
-      }
-    } catch (e) {
-      this.displayedGames = [];
-    }
+    // cargar categorías y juegos desde DatabaseService
+    this.loadCategoriesAndMaybeGames();
 
     // leer imagen de perfil guardada en localStorage (si existe)
     try {
@@ -140,13 +135,9 @@ export class CategoriasPage implements OnInit {
    * Nota: para listas grandes conviene añadir debounce o filtrado en backend.
    */
   filterDisplayedGames() {
-    if (!this.searchTerm || !this.selectedCategory) {
-      this.displayedGames = this.selectedCategory ? this.gamesByCategory[this.selectedCategory] || [] : [];
-      return;
-    }
+    if (!this.searchTerm) return;
     const term = this.searchTerm.toLowerCase();
-    const all = this.gamesByCategory[this.selectedCategory] || [];
-    this.displayedGames = all.filter(g => (g.title || '').toLowerCase().includes(term));
+    this.displayedGames = (this.displayedGames || []).filter(g => (g.title || '').toLowerCase().includes(term));
   }
 
   /**
@@ -163,72 +154,8 @@ export class CategoriasPage implements OnInit {
     }, 700);
   }
 
-  // --- Mostrar 5 juegos por categoría (dataset local, demo) ---
-  gamesByCategory: Record<string, any[]> = {
-    'Acción': [
-      { id: 'a1', title: 'Shadow Quest', price: '$29.990' },
-      { id: 'a2', title: 'Night Blades', price: '$39.990' },
-      { id: 'a3', title: 'Rogue Storm', price: '$24.990' },
-      { id: 'a4', title: 'Final War', price: '$49.990' },
-      { id: 'a5', title: 'Heroic Dawn', price: '$19.990' }
-    ],
-    'RPG': [
-      { id: 'r1', title: 'Eternal Saga', price: '$34.990' },
-      { id: 'r2', title: 'Dungeon Keep', price: '$22.990' },
-      { id: 'r3', title: 'Sword & Soul', price: '$44.990' },
-      { id: 'r4', title: 'Legends of Mira', price: '$39.990' },
-      { id: 'r5', title: 'Crystal Forge', price: '$27.990' }
-    ],
-    'Carreras': [
-      { id: 'c1', title: 'Speed Racer X', price: '$19.990', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRTEwvq1ygvThBZHx4cNZ3dU1zd_knXuiEbQ&s' },
-      { id: 'c2', title: 'Turbo Drift', price: '$24.990', image: 'https://play-lh.googleusercontent.com/px4Ni6wy5yei9_iOvX3Nl2ec-ACl_icJlm6uGGTcb_1CAwPneg7P8zfK2oTIL2iX-ii_=w526-h296-rw' },
-      { id: 'c3', title: 'Neon Circuit', price: '$29.990', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrHoUR_zzBBCuinJ12e_peUXeeSnHLoG-icA&s' },
-      { id: 'c4', title: 'Urban Rush', price: '$14.990', Image: 'https://play-lh.googleusercontent.com/sSZXgNbHoSVNYmzWsJ8oXkAwTWqbQQItexwtCDtBaINLi_NqdFpyMRI2v4waZvm_4Kc=w240-h480-rw' },
-      { id: 'c5', title: 'Track Master', price: '$34.990', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPkCs8at7s4jfnbyqtKPwHpW00GgUK8NiRog&s' }
-    ],
-    'Casual': [
-      { id: 'cs1', title: 'Mystic Farms', price: '$9.990' },
-      { id: 'cs2', title: 'Tile Match', price: '$4.990' },
-      { id: 'cs3', title: 'Bubble Pop', price: '$6.990' },
-      { id: 'cs4', title: 'Garden Joy', price: '$7.990' },
-      { id: 'cs5', title: 'Snack Time', price: '$3.990' }
-    ],
-    'Indie': [
-      { id: 'i1', title: 'Paper Tales', price: '$12.990' },
-      { id: 'i2', title: 'Low Poly Hero', price: '$9.990' },
-      { id: 'i3', title: 'Silent Steps', price: '$14.990' },
-      { id: 'i4', title: 'Echoes', price: '$11.990' },
-      { id: 'i5', title: 'Dreamwalk', price: '$8.990' }
-    ],
-    'Estrategia': [
-      { id: 's1', title: 'Kingdom Minds', price: '$29.990' },
-      { id: 's2', title: 'War Council', price: '$34.990' },
-      { id: 's3', title: 'Tactical Edge', price: '$24.990' },
-      { id: 's4', title: 'Colony Builder', price: '$39.990' },
-      { id: 's5', title: 'Grid Lords', price: '$19.990' }
-    ],
-    'Aventura': [
-      { id: 'av1', title: 'Lost Valley', price: '$22.990' },
-      { id: 'av2', title: 'Isle Explorers', price: '$18.990' },
-      { id: 'av3', title: 'Cave Runner', price: '$16.990' },
-      { id: 'av4', title: 'Skybound', price: '$24.990' },
-      { id: 'av5', title: 'Night Voyage', price: '$21.990' }
-    ],
-    'Deportes': [
-      { id: 'd1', title: 'Pro Soccer 21', price: '$39.990' },
-      { id: 'd2', title: 'Rally Champions', price: '$29.990' },
-      { id: 'd3', title: 'Hoops League', price: '$19.990' },
-      { id: 'd4', title: 'Skate Pro', price: '$14.990' },
-      { id: 'd5', title: 'Extreme BMX', price: '$17.990' }
-    ],
-    'Simulación': [
-      { id: 'sm1', title: 'Flight Sim X', price: '$49.990' },
-      { id: 'sm2', title: 'City Architect', price: '$29.990' },
-      { id: 'sm3', title: 'Farm Life 3', price: '$24.990' },
-      { id: 'sm4', title: 'Train Ops', price: '$19.990' },
-      { id: 'sm5', title: 'Garage Builder', price: '$9.990' }
-    ]
-  };
+  // placeholder until loaded from DB
+  gamesByCategory: Record<string, any[]> = {};
 
 
   /**
@@ -252,7 +179,7 @@ export class CategoriasPage implements OnInit {
   profileImage: string | null = null;
 
   // lista de categorías (coincide con portada)
-  categories = ['Acción', 'RPG', 'Carreras', 'Casual', 'Indie', 'Estrategia', 'Aventura', 'Deportes', 'Simulación'];
+  categories: string[] = [];
 
   // Mapa de imágenes por categoría. No rellenado por defecto.
   // Cuando me proporciones la URL directa de la imagen (o la subas a assets),
@@ -299,9 +226,8 @@ export class CategoriasPage implements OnInit {
       await loader.present();
       // simular carga y asignar
       setTimeout(async () => {
-        // Usar la variable `cat` (parámetro) en vez de `this.selectedCategory`
-        // así evitamos problemas de tipo dentro del callback asincrónico.
-        this.displayedGames = this.gamesByCategory[cat] || [];
+        // cargar juegos desde la base
+        this.displayedGames = await this.db.getGamesByCategory(cat) || [];
         await loader.dismiss();
         // dar un tick para que Angular renderice la sección y luego desplazar suavemente
         setTimeout(() => {
@@ -332,6 +258,25 @@ export class CategoriasPage implements OnInit {
       this.router.navigate(['/home'], { state: { from: 'categorias' } });
     } catch (e) {
       // ignore
+    }
+  }
+
+  // Load categories and games if needed
+  private async loadCategoriesAndMaybeGames() {
+    try {
+      const cats = await this.db.getCategories();
+      this.categories = (cats || []).map(c => c.name);
+      if (this.selectedCategory) {
+        this.displayedGames = await this.db.getGamesByCategory(this.selectedCategory);
+      } else {
+        this.displayedGames = [];
+      }
+    } catch (err) {
+      // if DB fails, fallback to existing dataset if any
+      if (!this.categories || this.categories.length === 0) {
+        this.categories = Object.keys(this.gamesByCategory || {});
+      }
+      this.displayedGames = [];
     }
   }
 

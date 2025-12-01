@@ -1,0 +1,219 @@
+{
+  "@angular-devkit/build-angular": {
+    "current": "20.3.7",
+    "wanted": "20.3.12",
+    "latest": "21.0.1",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\@angular-devkit\\build-angular"
+  },
+  "@angular-eslint/builder": {
+    "current": "20.5.0",
+    "wanted": "20.7.0",
+    "latest": "21.0.1",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\@angular-eslint\\builder"
+  },
+  "@angular-eslint/eslint-plugin": {
+    "current": "20.5.0",
+    "wanted": "20.7.0",
+    "latest": "21.0.1",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\@angular-eslint\\eslint-plugin"
+  },
+  "@angular-eslint/eslint-plugin-template": {
+    "current": "20.5.0",
+    "wanted": "20.7.0",
+    "latest": "21.0.1",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\@angular-eslint\\eslint-plugin-template"
+  },
+  "@angular-eslint/schematics": {
+    "current": "20.5.0",
+    "wanted": "20.7.0",
+    "latest": "21.0.1",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\@angular-eslint\\schematics"
+  },
+  "@angular-eslint/template-parser": {
+    "current": "20.5.0",
+    "wanted": "20.7.0",
+    "latest": "21.0.1",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\@angular-eslint\\template-parser"
+  },
+  "@angular/animations": {
+    "current": "20.3.7",
+    "wanted": "20.3.15",
+    "latest": "21.0.2",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\@angular\\animations"
+  },
+  "@angular/cdk": {
+    "current": "20.2.11",
+    "wanted": "20.2.14",
+    "latest": "21.0.1",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\@angular\\cdk"
+  },
+  "@angular/cli": {
+    "current": "20.3.7",
+    "wanted": "20.3.12",
+    "latest": "21.0.1",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\@angular\\cli"
+  },
+  "@angular/common": {
+    "current": "20.3.7",
+    "wanted": "20.3.15",
+    "latest": "21.0.2",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\@angular\\common"
+  },
+  "@angular/compiler": {
+    "current": "20.3.7",
+    "wanted": "20.3.15",
+    "latest": "21.0.2",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\@angular\\compiler"
+  },
+  "@angular/compiler-cli": {
+    "current": "20.3.7",
+    "wanted": "20.3.15",
+    "latest": "21.0.2",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\@angular\\compiler-cli"
+  },
+  "@angular/core": {
+    "current": "20.3.7",
+    "wanted": "20.3.15",
+    "latest": "21.0.2",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\@angular\\core"
+  },
+  "@angular/forms": {
+    "current": "20.3.7",
+    "wanted": "20.3.15",
+    "latest": "21.0.2",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\@angular\\forms"
+  },
+  "@angular/language-service": {
+    "current": "20.3.7",
+    "wanted": "20.3.15",
+    "latest": "21.0.2",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\@angular\\language-service"
+  },
+  "@angular/material": {
+    "current": "20.2.11",
+    "wanted": "20.2.14",
+    "latest": "21.0.1",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\@angular\\material"
+  },
+  "@angular/platform-browser": {
+    "current": "20.3.7",
+    "wanted": "20.3.15",
+    "latest": "21.0.2",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\@angular\\platform-browser"
+  },
+  "@angular/platform-browser-dynamic": {
+    "current": "20.3.7",
+    "wanted": "20.3.15",
+    "latest": "21.0.2",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\@angular\\platform-browser-dynamic"
+  },
+  "@angular/router": {
+    "current": "20.3.7",
+    "wanted": "20.3.15",
+    "latest": "21.0.2",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\@angular\\router"
+  },
+  "@ionic/angular": {
+    "current": "8.7.7",
+    "wanted": "8.7.11",
+    "latest": "8.7.11",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\@ionic\\angular"
+  },
+  "@types/jasmine": {
+    "current": "5.1.12",
+    "wanted": "5.1.13",
+    "latest": "5.1.13",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\@types\\jasmine"
+  },
+  "@typescript-eslint/eslint-plugin": {
+    "current": "8.46.2",
+    "wanted": "8.48.0",
+    "latest": "8.48.0",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\@typescript-eslint\\eslint-plugin"
+  },
+  "@typescript-eslint/parser": {
+    "current": "8.46.2",
+    "wanted": "8.48.0",
+    "latest": "8.48.0",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\@typescript-eslint\\parser"
+  },
+  "eslint": {
+    "current": "9.38.0",
+    "wanted": "9.39.1",
+    "latest": "9.39.1",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\eslint"
+  },
+  "eslint-plugin-jsdoc": {
+    "current": "48.11.0",
+    "wanted": "48.11.0",
+    "latest": "61.4.1",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\eslint-plugin-jsdoc"
+  },
+  "eslint-plugin-prefer-arrow": {
+    "current": "1.2.2",
+    "wanted": "1.2.2",
+    "latest": "1.2.3",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\eslint-plugin-prefer-arrow"
+  },
+  "ionicons": {
+    "current": "7.4.0",
+    "wanted": "7.4.0",
+    "latest": "8.0.13",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\ionicons"
+  },
+  "jasmine-core": {
+    "current": "5.1.2",
+    "wanted": "5.1.2",
+    "latest": "5.12.1",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\jasmine-core"
+  },
+  "jasmine-spec-reporter": {
+    "current": "5.0.2",
+    "wanted": "5.0.2",
+    "latest": "7.0.0",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\jasmine-spec-reporter"
+  },
+  "typescript": {
+    "current": "5.8.3",
+    "wanted": "5.8.3",
+    "latest": "5.9.3",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\typescript"
+  },
+  "zone.js": {
+    "current": "0.15.1",
+    "wanted": "0.15.1",
+    "latest": "0.16.0",
+    "dependent": "SkeletonAPP",
+    "location": "C:\\Users\\Nicol\\OneDrive\\Escritorio\\DUOC\\2025\\4_bimestre\\Progamacion_de_aplicaciones_moviles_001A\\Semana_1\\SkeletonAPP\\node_modules\\zone.js"
+  }
+}

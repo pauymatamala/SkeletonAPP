@@ -1,6 +1,7 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { StorageService } from '../core/storage.service';
 
 @Component({
   selector: 'app-registrar',
@@ -17,7 +18,7 @@ export class RegistrarPage implements OnInit {
   nacimiento: string | null = null;
   nacimientoDate: Date = new Date();
 
-  constructor(private router: Router, private fb: FormBuilder) {
+  constructor(private router: Router, private fb: FormBuilder, private storageService: StorageService) {
     this.registerForm = this.fb.group({
       nombre: ['', [Validators.required, Validators.minLength(3)]],
       username: ['', [Validators.required, Validators.minLength(3)]],
@@ -36,7 +37,7 @@ export class RegistrarPage implements OnInit {
     this.isOpen = true;
   }
 
-  saveTemp() {
+  async saveTemp() {
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
       return;
@@ -46,14 +47,19 @@ export class RegistrarPage implements OnInit {
       ...this.registerForm.value,
       savedAt: new Date().toISOString()
     };
-    // Guardar temporalmente en sessionStorage
     try {
-      sessionStorage.setItem('tempRegistration', JSON.stringify(temp));
-      console.log('Datos temporales guardados en sessionStorage:', temp);
-      // después de guardar, redirigir al login
+      // Persistir usuario en StorageService bajo la clave 'users'
+      const users = (await this.storageService.get<Record<string, string>>('users')) || {};
+      const email = temp.email as string;
+      const password = temp.password as string;
+      users[email] = password;
+      await this.storageService.set('users', users);
+      // también opcionalmente marcar como usuario actual
+      await this.storageService.set('currentUser', { email });
+      // navegar a login
       this.router.navigate(['/login']);
     } catch (e) {
-      console.error('Error guardando en sessionStorage', e);
+      console.error('Error guardando registro en StorageService', e);
     }
   }
 

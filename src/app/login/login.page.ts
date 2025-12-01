@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IonicModule, AlertController, ToastController, AnimationController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { StorageService } from '../core/storage.service';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +22,7 @@ export class LoginPage implements OnInit {
   @ViewChild('passwordInput', { read: ElementRef, static: false }) passwordInput!: ElementRef;
 
   // inyectamos creación de animaciones y formbuilder
-  constructor(private fb: FormBuilder, private router: Router, private animationCtrl: AnimationController) {
+  constructor(private fb: FormBuilder, private router: Router, private animationCtrl: AnimationController, private storageService: StorageService) {
     this.loginForm = this.fb.group({
       // Use email as user identifier
       email: ['', [Validators.required, Validators.email]],
@@ -35,23 +36,22 @@ export class LoginPage implements OnInit {
   get email() { return this.loginForm.get('email')!; }
   get password() { return this.loginForm.get('password')!; }
 
-  onSubmit() {
+  async onSubmit() {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;
     }
-  const email = this.loginForm.value.email;
-  // Guardar usuario para persistencia como objeto JSON { email }
-  try {
-    const cur = localStorage.getItem('currentUser');
-    const obj = cur ? JSON.parse(cur) : {};
-    obj.email = email;
-    localStorage.setItem('currentUser', JSON.stringify(obj));
-  } catch (e) {
-    localStorage.setItem('currentUser', JSON.stringify({ email }));
-  }
-  // Navegar a Portada pasando el email en state
-  this.router.navigate(['/portada'], { state: { email }, queryParams: { email } });
+    const email = this.loginForm.value.email;
+    // Guardar usuario para persistencia usando StorageService
+    try {
+      const cur = (await this.storageService.get<any>('currentUser')) || {};
+      cur.email = email;
+      await this.storageService.set('currentUser', cur);
+    } catch (e) {
+      await this.storageService.set('currentUser', { email });
+    }
+    // Navegar a Portada pasando el email en state
+    this.router.navigate(['/portada'], { state: { email }, queryParams: { email } });
   }
 
   // Ir a la página de registro al presionar el botón "Crear usuario"
@@ -67,8 +67,7 @@ export class LoginPage implements OnInit {
     }
     const user = this.loginForm.value.email;
     const pass = this.loginForm.value.password;
-    const usersJson = localStorage.getItem('users');
-    const users = usersJson ? JSON.parse(usersJson) : {};
+    const users = (await this.storageService.get<Record<string, string>>('users')) || {};
     if (users[user]) {
       const alert = document.createElement('ion-alert');
       alert.header = 'Usuario existente';
@@ -79,7 +78,7 @@ export class LoginPage implements OnInit {
       return;
     }
     users[user] = pass;
-    localStorage.setItem('users', JSON.stringify(users));
+    await this.storageService.set('users', users);
     const toast = document.createElement('ion-toast');
     toast.message = 'Usuario creado correctamente';
     toast.duration = 2000;
@@ -106,8 +105,7 @@ export class LoginPage implements OnInit {
       {
         text: 'Buscar',
           handler: async (data: any) => {
-          const usersJson = localStorage.getItem('users');
-          const users = usersJson ? JSON.parse(usersJson) : {};
+          const users = (await this.storageService.get<Record<string, string>>('users')) || {};
           const found = users[data.email];
           if (!found) {
             const a = document.createElement('ion-alert');

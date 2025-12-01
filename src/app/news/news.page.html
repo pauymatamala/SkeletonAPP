@@ -1,0 +1,43 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Noticias</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="form" (ngSubmit)="add()">
+    <ion-item>
+      <ion-label position="floating">Título</ion-label>
+      <ion-input formControlName="title"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Contenido</ion-label>
+      <ion-textarea rows="4" formControlName="content"></ion-textarea>
+    </ion-item>
+    <div class="actions">
+      <ion-button type="submit" expand="block" [disabled]="form.invalid">Agregar</ion-button>
+    </div>
+  </form>
+
+  <ion-refresher slot="fixed" (ionRefresh)="load()">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list *ngIf="!loading && items && items.length">
+    <ion-item *ngFor="let n of items">
+      <ion-label>
+        <h2>{{ n.title }}</h2>
+        <p class="muted">{{ n.date | date: 'short' }}</p>
+        <p>{{ n.content }}</p>
+      </ion-label>
+      <ion-button slot="end" color="danger" fill="clear" (click)="remove(n.id)">Eliminar</ion-button>
+    </ion-item>
+  </ion-list>
+
+  <div *ngIf="!loading && (!items || !items.length)" class="empty">
+    No hay noticias.
+  </div>
+</ion-content>
