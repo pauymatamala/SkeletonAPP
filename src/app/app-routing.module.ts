@@ -33,6 +33,11 @@ const routes: Routes = [
     loadChildren: () => import('./news/news.module').then( m => m.NewsPageModule),
     canActivate: [AuthGuard]
   }
+  ,
+  {
+    path: '**',
+    loadChildren: () => import('./not-found/not-found.module').then(m => m.NotFoundPageModule)
+  }
 ];
 
 @NgModule({
