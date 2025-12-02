@@ -7,8 +7,6 @@ import { News } from '../models/news.model';
 
 @Component({
   selector: 'app-news',
-  standalone: true,
-  imports: [CommonModule, IonicModule, FormsModule, ReactiveFormsModule],
   templateUrl: './news.page.html',
   styleUrls: ['./news.page.scss']
 })

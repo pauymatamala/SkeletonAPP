@@ -6,8 +6,7 @@ import { DatabaseService } from '../core/database.service';
 
 @Component({
   selector: 'app-news-new',
-  standalone: true,
-  imports: [CommonModule, IonicModule, FormsModule, ReactiveFormsModule],
+  
   template: `
     <ion-header>
       <ion-toolbar>

@@ -20,7 +20,8 @@ export class StorageService {
 
   async get<T>(key: string): Promise<T | null> {
     await this.init();
-    return (await this._storage?.get(key)) as T || null;
+    const v = await this._storage?.get(key);
+    return (v as T) ?? null;
   }
 
   async remove(key: string) {

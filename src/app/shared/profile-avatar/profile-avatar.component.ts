@@ -2,13 +2,12 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-profile-avatar',
   templateUrl: './profile-avatar.component.html',
-  styleUrls: ['./profile-avatar.component.scss'],
-  standalone: true,
-  imports: [IonicModule, CommonModule]
+  styleUrls: ['./profile-avatar.component.scss']
 })
 export class ProfileAvatarComponent {
   @Input() src: string | null = null;
