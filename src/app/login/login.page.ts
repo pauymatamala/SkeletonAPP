@@ -1,7 +1,7 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IonicModule, AlertController, ToastController, AnimationController } from '@ionic/angular';
+import { IonicModule, AnimationController, AlertController, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { StorageService } from '../core/storage.service';
 
@@ -22,7 +22,14 @@ export class LoginPage implements OnInit {
   @ViewChild('passwordInput', { read: ElementRef, static: false }) passwordInput!: ElementRef;
 
   // inyectamos creación de animaciones y formbuilder
-  constructor(private fb: FormBuilder, private router: Router, private animationCtrl: AnimationController, private storageService: StorageService) {
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private animationCtrl: AnimationController,
+    private storageService: StorageService,
+    private alertCtrl: AlertController,
+    private toastCtrl: ToastController
+  ) {
     this.loginForm = this.fb.group({
       // Use email as user identifier
       email: ['', [Validators.required, Validators.email]],
@@ -69,104 +76,80 @@ export class LoginPage implements OnInit {
     const pass = this.loginForm.value.password;
     const users = (await this.storageService.get<Record<string, string>>('users')) || {};
     if (users[user]) {
-      const alert = document.createElement('ion-alert');
-      alert.header = 'Usuario existente';
-      alert.message = 'El usuario ya existe.';
-      alert.buttons = ['OK'];
-      document.body.appendChild(alert);
+      const alert = await this.alertCtrl.create({
+        header: 'Usuario existente',
+        message: 'El usuario ya existe.',
+        buttons: ['OK']
+      });
       await alert.present();
       return;
     }
     users[user] = pass;
     await this.storageService.set('users', users);
-    const toast = document.createElement('ion-toast');
-    toast.message = 'Usuario creado correctamente';
-    toast.duration = 2000;
-    document.body.appendChild(toast);
+    const toast = await this.toastCtrl.create({ message: 'Usuario creado correctamente', duration: 2000 });
     await toast.present();
   }
 
   // Recuperar contraseña: pedir usuario y mostrar **** o permitir resetear
   async recoverPassword() {
-    const alertEl = document.createElement('ion-alert');
-    alertEl.header = 'Recuperar contraseña';
-    alertEl.inputs = [
-      {
-        name: 'email',
-        type: 'email',
-        placeholder: 'Ingresa tu correo'
-      }
-    ];
-    alertEl.buttons = [
-      {
-        text: 'Cancelar',
-        role: 'cancel'
-      },
-      {
-        text: 'Buscar',
+    const alertEl = await this.alertCtrl.create({
+      header: 'Recuperar contraseña',
+      inputs: [
+        { name: 'email', type: 'email', placeholder: 'Ingresa tu correo' }
+      ],
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'Buscar',
           handler: async (data: any) => {
-          const users = (await this.storageService.get<Record<string, string>>('users')) || {};
-          const found = users[data.email];
-          if (!found) {
-            const a = document.createElement('ion-alert');
-            a.header = 'No encontrado';
-            a.message = 'Usuario no encontrado.';
-            a.buttons = ['OK'];
-            document.body.appendChild(a);
-            await a.present();
-            return;
-          }
-          // Mostrar contraseña enmascarada
-          const masked = '****';
-          const showAlert = document.createElement('ion-alert');
-          showAlert.header = 'Contraseña encontrada';
-          showAlert.message = `Contraseña: <strong>${masked}</strong>`;
-          showAlert.buttons = [
-            'OK',
-            {
-              text: 'Resetear',
-              handler: async () => {
-                const reset = document.createElement('ion-alert');
-                reset.header = 'Nueva contraseña';
-                reset.inputs = [
-                  { name: 'newpass', type: 'password', placeholder: 'Nueva contraseña (mínimo 6 caracteres)' }
-                ];
-                reset.buttons = [
-                  'Cancelar',
-                  {
-                    text: 'Guardar',
-                    handler: async (rdata: any) => {
-                      const np = rdata.newpass;
-                      if (!/.{6,}/.test(np)) {
-                        const e = document.createElement('ion-alert');
-                        e.header = 'Error';
-                        e.message = 'La nueva contraseña debe tener al menos 6 caracteres.';
-                        e.buttons = ['OK'];
-                        document.body.appendChild(e);
-                        await e.present();
-                        return;
-                      }
-                      users[data.email] = np;
-                      localStorage.setItem('users', JSON.stringify(users));
-                      const t = document.createElement('ion-toast');
-                      t.message = 'Contraseña actualizada';
-                      t.duration = 2000;
-                      document.body.appendChild(t);
-                      await t.present();
-                    }
-                  }
-                ];
-                document.body.appendChild(reset);
-                await reset.present();
-              }
+            const users = (await this.storageService.get<Record<string, string>>('users')) || {};
+            const found = users[data.email];
+            if (!found) {
+              const a = await this.alertCtrl.create({ header: 'No encontrado', message: 'Usuario no encontrado.', buttons: ['OK'] });
+              await a.present();
+              return;
             }
-          ];
-          document.body.appendChild(showAlert);
-          await showAlert.present();
+            const masked = '****';
+            const showAlert = await this.alertCtrl.create({
+              header: 'Contraseña encontrada',
+              message: `Contraseña: <strong>${masked}</strong>`,
+              buttons: [
+                'OK',
+                {
+                  text: 'Resetear',
+                  handler: async () => {
+                    const reset = await this.alertCtrl.create({
+                      header: 'Nueva contraseña',
+                      inputs: [ { name: 'newpass', type: 'password', placeholder: 'Nueva contraseña (mínimo 6 caracteres)' } ],
+                      buttons: [
+                        'Cancelar',
+                        {
+                          text: 'Guardar',
+                          handler: async (rdata: any) => {
+                            const np = rdata.newpass;
+                            if (!/.{6,}/.test(np)) {
+                              const e = await this.alertCtrl.create({ header: 'Error', message: 'La nueva contraseña debe tener al menos 6 caracteres.', buttons: ['OK'] });
+                              await e.present();
+                              return;
+                            }
+                            users[data.email] = np;
+                            localStorage.setItem('users', JSON.stringify(users));
+                            const t = await this.toastCtrl.create({ message: 'Contraseña actualizada', duration: 2000 });
+                            await t.present();
+                          }
+                        }
+                      ]
+                    });
+                    await reset.present();
+                  }
+                }
+              ]
+            });
+            await showAlert.present();
+          }
         }
-      }
-    ];
-    document.body.appendChild(alertEl);
+      ]
+    });
     await alertEl.present();
   }
 

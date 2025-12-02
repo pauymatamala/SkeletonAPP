@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { DatabaseService } from '../core/database.service';
+import { Subscription } from 'rxjs';
 import { News } from '../models/news.model';
 
 @Component({
@@ -10,10 +11,11 @@ import { News } from '../models/news.model';
   templateUrl: './news.page.html',
   styleUrls: ['./news.page.scss']
 })
-export class NewsPage implements OnInit {
+export class NewsPage implements OnInit, OnDestroy {
   form: FormGroup;
   items: News[] = [];
   loading = true;
+  private readySub?: Subscription;
 
   constructor(private fb: FormBuilder, private db: DatabaseService) {
     this.form = this.fb.group({
@@ -23,10 +25,14 @@ export class NewsPage implements OnInit {
   }
 
   async ngOnInit() {
-    await this.db.init();
-    this.db.ready$.subscribe(async ready => {
+    // db.init() is performed at app startup in AppComponent; just react to ready$ here
+    this.readySub = this.db.ready$.subscribe(async ready => {
       if (ready) await this.load();
     });
+  }
+
+  ngOnDestroy(): void {
+    this.readySub?.unsubscribe();
   }
 
   async load() {
