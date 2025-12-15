@@ -90,6 +90,10 @@ export class DatabaseService {
       content TEXT,
       date TEXT
     );`;
+    const createKV = `CREATE TABLE IF NOT EXISTS kv_store (
+      key TEXT PRIMARY KEY,
+      value TEXT
+    );`;
 
     if (this.isNative && this.db) {
       try {
@@ -97,6 +101,7 @@ export class DatabaseService {
         await this.db.execute(createCategories);
         await this.db.execute(createGames);
         await this.db.execute(createNews);
+        await this.db.execute(createKV);
       } catch (err) {
         console.error('createTables error', err);
       }
@@ -167,6 +172,47 @@ export class DatabaseService {
     // fallback
     const raw = localStorage.getItem(this.fallbackKey) || '[]';
     return JSON.parse(raw) as News[];
+  }
+
+  // simple key/value cache helpers (used for offline sync)
+  async setKeyValue(key: string, value: any): Promise<boolean> {
+    const raw = JSON.stringify(value);
+    if (this.isNative && this.db) {
+      try {
+        await this.db.run('INSERT OR REPLACE INTO kv_store (key, value) VALUES (?, ?)', [key, raw]);
+        return true;
+      } catch (err) {
+        console.error('setKeyValue (native) failed', err);
+        return false;
+      }
+    }
+
+    localStorage.setItem(`kv_${key}`, raw);
+    return true;
+  }
+
+  async getKeyValue<T = any>(key: string): Promise<T | null> {
+    if (this.isNative && this.db) {
+      try {
+        const res = await this.db.query('SELECT value FROM kv_store WHERE key = ?', [key]);
+        const rows = res && (res.values || res.rows || []);
+        if (rows && rows[0] && rows[0].value) {
+          return JSON.parse(rows[0].value) as T;
+        }
+        return null;
+      } catch (err) {
+        console.error('getKeyValue (native) failed', err);
+        return null;
+      }
+    }
+
+    const raw = localStorage.getItem(`kv_${key}`);
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw) as T;
+    } catch (e) {
+      return null;
+    }
   }
 
   async addNews(item: News): Promise<number | null> {

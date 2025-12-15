@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
-import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './core/auth.guard';
+import { SelectivePreloadingService } from './core/selective-preloading.service';
 
 const routes: Routes = [
   {
@@ -14,6 +15,7 @@ const routes: Routes = [
   },
   {
     path: 'home',
+    data: { preload: true },
     loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
   },
   {
@@ -26,6 +28,7 @@ const routes: Routes = [
   },
   {
     path: 'categorias',
+    data: { preload: true },
     loadChildren: () => import('./categorias/categorias.module').then( m => m.CategoriasPageModule)
   },
   {
@@ -42,7 +45,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+    RouterModule.forRoot(routes, { preloadingStrategy: SelectivePreloadingService })
   ],
   exports: [RouterModule]
 })
