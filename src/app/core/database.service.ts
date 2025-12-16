@@ -50,6 +50,7 @@ export class DatabaseService {
         // ensure fallback structure exists
         const existing = localStorage.getItem(this.fallbackKey);
         if (!existing) localStorage.setItem(this.fallbackKey, JSON.stringify([]));
+        await this.seedIfEmpty();
       }
 
       this.ready$.next(true);
@@ -163,6 +164,33 @@ export class DatabaseService {
           localStorage.setItem('app_games_fallback', JSON.stringify(list));
         }
       }
+
+      // Seed noticias de ejemplo
+      if (this.isNative && this.db) {
+        const newsRes = await this.db.query('SELECT COUNT(*) as cnt FROM news');
+        const newsCount = newsRes && ((newsRes.values && newsRes.values[0] && newsRes.values[0].cnt) || 0);
+        if (!newsCount || Number(newsCount) === 0) {
+          const sampleNews = [
+            { title: 'Bienvenido a SkeletonAPP', content: 'Esta es tu primera noticia. Puedes agregar más usando el formulario de arriba.' },
+            { title: 'Nueva función: Sync API Demo', content: 'Hemos agregado una nueva página que demuestra consultas síncronas a APIs con caché inteligente.' },
+            { title: 'Actualización de Categorías', content: 'Ahora puedes ver 5 juegos por cada categoría con imágenes y descripciones detalladas.' }
+          ];
+          for (const news of sampleNews) {
+            await this.db.run('INSERT INTO news (title, content, date) VALUES (?, ?, ?)', [news.title, news.content, new Date().toISOString()]);
+          }
+        }
+      } else {
+        // Fallback para web
+        const existingNews = localStorage.getItem('app_news_fallback');
+        if (!existingNews) {
+          const sampleNews = [
+            { id: 1, title: 'Bienvenido a SkeletonAPP', content: 'Esta es tu primera noticia. Puedes agregar más usando el formulario de arriba.', date: new Date().toISOString() },
+            { id: 2, title: 'Nueva función: Sync API Demo', content: 'Hemos agregado una nueva página que demuestra consultas síncronas a APIs con caché inteligente.', date: new Date().toISOString() },
+            { id: 3, title: 'Actualización de Categorías', content: 'Ahora puedes ver 5 juegos por cada categoría con imágenes y descripciones detalladas.', date: new Date().toISOString() }
+          ];
+          localStorage.setItem('app_news_fallback', JSON.stringify(sampleNews));
+        }
+      }
     } catch (err) {
       console.warn('seedIfEmpty error', err);
     }
@@ -174,6 +202,14 @@ export class DatabaseService {
         const res = await this.db.query('SELECT * FROM news ORDER BY id DESC');
         // plugin may return rows under 'values' or 'rows'
         const rows = res && (res.values || res.rows || res.result || []);
+        
+        // Si no hay noticias, crear noticias de ejemplo
+        if (!rows || rows.length === 0) {
+          await this.seedNewsIfEmpty();
+          const res2 = await this.db.query('SELECT * FROM news ORDER BY id DESC');
+          return res2 && (res2.values || res2.rows || res2.result || []) || [];
+        }
+        
         return rows || [];
       } catch (err) {
         console.error('getAllNews (native) failed', err);
@@ -182,8 +218,34 @@ export class DatabaseService {
     }
 
     // fallback
-    const raw = localStorage.getItem(this.fallbackKey) || '[]';
-    return JSON.parse(raw) as News[];
+    let newsData = localStorage.getItem('app_news_fallback');
+    if (!newsData || newsData === '[]') {
+      // Crear noticias de ejemplo en fallback
+      const sampleNews = [
+        { id: 1, title: 'Bienvenido a SkeletonAPP', content: 'Esta es tu primera noticia. Puedes agregar más usando el formulario de arriba.', date: new Date().toISOString() },
+        { id: 2, title: 'Nueva función: Sync API Demo', content: 'Hemos agregado una nueva página que demuestra consultas síncronas a APIs con caché inteligente.', date: new Date().toISOString() },
+        { id: 3, title: 'Actualización de Categorías', content: 'Ahora puedes ver 5 juegos por cada categoría con imágenes y descripciones detalladas.', date: new Date().toISOString() }
+      ];
+      newsData = JSON.stringify(sampleNews);
+      localStorage.setItem('app_news_fallback', newsData);
+    }
+    return JSON.parse(newsData) as News[];
+  }
+
+  private async seedNewsIfEmpty() {
+    if (!this.isNative || !this.db) return;
+    try {
+      const sampleNews = [
+        { title: 'Bienvenido a SkeletonAPP', content: 'Esta es tu primera noticia. Puedes agregar más usando el formulario de arriba.' },
+        { title: 'Nueva función: Sync API Demo', content: 'Hemos agregado una nueva página que demuestra consultas síncronas a APIs con caché inteligente.' },
+        { title: 'Actualización de Categorías', content: 'Ahora puedes ver 5 juegos por cada categoría con imágenes y descripciones detalladas.' }
+      ];
+      for (const news of sampleNews) {
+        await this.db.run('INSERT INTO news (title, content, date) VALUES (?, ?, ?)', [news.title, news.content, new Date().toISOString()]);
+      }
+    } catch (err) {
+      console.error('seedNewsIfEmpty error', err);
+    }
   }
 
   // simple key/value cache helpers (used for offline sync)
@@ -245,9 +307,10 @@ export class DatabaseService {
     // fallback
     const all = await this.getAllNews();
     const id = (all.length ? (all[0].id || 0) : 0) + 1;
-    const record: News = { id, title: item.title, content: item.content, date: item.date || new Date().toISOString() };
+    const date = item.date || new Date().toISOString();
+    const record: News = { id, title: item.title, content: item.content, date };
     all.unshift(record);
-    localStorage.setItem(this.fallbackKey, JSON.stringify(all));
+    localStorage.setItem('app_news_fallback', JSON.stringify(all));
     return id;
   }
 
@@ -264,7 +327,7 @@ export class DatabaseService {
 
     const all = await this.getAllNews();
     const filtered = all.filter(n => n.id !== id);
-    localStorage.setItem(this.fallbackKey, JSON.stringify(filtered));
+    localStorage.setItem('app_news_fallback', JSON.stringify(filtered));
     return true;
   }
 
@@ -285,7 +348,7 @@ export class DatabaseService {
     const idx = all.findIndex(n => n.id === item.id);
     if (idx === -1) return false;
     all[idx] = { ...all[idx], ...item };
-    localStorage.setItem(this.fallbackKey, JSON.stringify(all));
+    localStorage.setItem('app_news_fallback', JSON.stringify(all));
     return true;
   }
 

@@ -5,7 +5,6 @@ import { IonicModule } from '@ionic/angular';
 
 import { SyncApiPageRoutingModule } from './sync-api-routing.module';
 import { SyncApiPage } from './sync-api.page';
-import { SyncApiDemoComponent } from '../components/sync-api-demo/sync-api-demo.component';
 
 @NgModule({
   imports: [
@@ -13,8 +12,7 @@ import { SyncApiDemoComponent } from '../components/sync-api-demo/sync-api-demo.
     FormsModule,
     IonicModule,
     SyncApiPageRoutingModule,
-    SyncApiDemoComponent
-  ],
-  declarations: [SyncApiPage]
+    SyncApiPage
+  ]
 })
 export class SyncApiPageModule { }

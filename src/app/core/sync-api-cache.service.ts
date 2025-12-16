@@ -106,7 +106,7 @@ export class SyncApiCacheService {
   /**
    * Estado de carga de posts
    */
-  isLoadingPosts$(): Observable<boolean> {
+  getLoadingPostsState(): Observable<boolean> {
     return this.isLoadingPosts$.asObservable();
   }
 
@@ -125,7 +125,7 @@ export class SyncApiCacheService {
     this.isLoadingPosts$.next(true);
 
     this.api.get('posts').pipe(
-      tap(posts => {
+      tap((posts: any) => {
         this.postsCache$.next(posts);
         this.db.setKeyValue('api_posts_cache', posts).catch(err => 
           console.warn('Error guardando posts en caché', err)
@@ -178,7 +178,7 @@ export class SyncApiCacheService {
   /**
    * Estado de carga de usuarios
    */
-  isLoadingUsers$(): Observable<boolean> {
+  getLoadingUsersState(): Observable<boolean> {
     return this.isLoadingUsers$.asObservable();
   }
 
@@ -196,7 +196,7 @@ export class SyncApiCacheService {
     this.isLoadingUsers$.next(true);
 
     this.api.get('users').pipe(
-      tap(users => {
+      tap((users: any) => {
         this.usersCache$.next(users);
         this.db.setKeyValue('api_users_cache', users).catch(err =>
           console.warn('Error guardando usuarios en caché', err)
@@ -257,7 +257,7 @@ export class SyncApiCacheService {
     }
 
     this.api.get('comments').pipe(
-      tap(comments => {
+      tap((comments: any) => {
         this.commentsCache$.next(comments);
         this.db.setKeyValue('api_comments_cache', comments).catch(err =>
           console.warn('Error guardando comments en caché', err)

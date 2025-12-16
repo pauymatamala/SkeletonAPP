@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
-import { SyncApiCacheService } from '../core/sync-api-cache.service';
+import { SyncApiCacheService } from '../../core/sync-api-cache.service';
 
 /**
  * Componente de demostración: Consultas Síncronas a API
@@ -27,8 +27,8 @@ export class SyncApiDemoComponent implements OnInit {
   comments: any[] = [];
 
   // Observables para reactividad
-  isLoadingPosts$ = this.syncApi.isLoadingPosts$();
-  isLoadingUsers$ = this.syncApi.isLoadingUsers$();
+  isLoadingPosts$ = this.syncApi.getLoadingPostsState();
+  isLoadingUsers$ = this.syncApi.getLoadingUsersState();
 
   // Estados
   activeTab = 'posts';
@@ -43,15 +43,15 @@ export class SyncApiDemoComponent implements OnInit {
     this.loadDataSync();
 
     // Escuchar cambios en observables (reactividad)
-    this.syncApi.getPosts$().subscribe(posts => {
+    this.syncApi.getPosts$().subscribe((posts: any[]) => {
       this.posts = posts;
     });
 
-    this.syncApi.getUsers$().subscribe(users => {
+    this.syncApi.getUsers$().subscribe((users: any[]) => {
       this.users = users;
     });
 
-    this.syncApi.getComments$().subscribe(comments => {
+    this.syncApi.getComments$().subscribe((comments: any[]) => {
       this.comments = comments;
     });
 
