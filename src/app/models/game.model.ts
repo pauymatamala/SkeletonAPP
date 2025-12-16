@@ -1,7 +1,12 @@
 export interface Game {
   id?: number;
-  title: string;
-  category: string;
+  name: string;
+  title?: string;
+  categoryId: number;
+  category?: string;
+  description?: string;
+  rules?: string;
+  difficulty?: string;
   price?: string;
   image?: string;
 }

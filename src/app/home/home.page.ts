@@ -1,6 +1,10 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AnimationController } from '@ionic/angular';
+import { SyncQueryService } from '../core/sync-query.service';
+import { AsyncPersistenceService } from '../core/async-persistence.service';
+import { CapacitorPluginsService } from '../core/capacitor-plugins.service';
+import { Game } from '../models/game.model';
 
 @Component({
   selector: 'app-home',
@@ -23,8 +27,23 @@ export class HomePage implements OnInit {
 
   profileImage: string | null = null;
 
-  // Inyectar AnimationController para animaciones Ionic
-  constructor(private router: Router, private route: ActivatedRoute, private animationCtrl: AnimationController) {}
+  // IL5: Datos síncronos (consultas rápidas en caché)
+  syncGames: Game[] = [];
+  syncStats: any = null;
+
+  // IL6: Datos asincónicos con persistencia
+  asyncGames$ = this.asyncPersistence.getGamesCached();
+  isLoading$ = this.asyncPersistence.getIsLoading();
+
+  // Inyectar AnimationController, servicios de IL5/IL6/IL7
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private animationCtrl: AnimationController,
+    private syncQuery: SyncQueryService,
+    private asyncPersistence: AsyncPersistenceService,
+    private capacitorPlugins: CapacitorPluginsService
+  ) {}
 
   ngOnInit() {
     // 1) Intentar NavigationExtras (state) — forma preferida cuando la navegación viene de la app
@@ -78,6 +97,75 @@ export class HomePage implements OnInit {
         // ignore parse errors
       }
     }
+
+    // ============= IL5: Consultas Síncronas =============
+    // Obtener datos rápidamente del caché local sin esperar
+    this.loadSyncData();
+
+    // ============= IL6: Consultas Asincrónicas con Persistencia =============
+    // Cargar datos desde API con persistencia automática
+    this.loadAsyncDataWithPersistence();
+
+    // ============= IL7: Plugins de Capacitor =============
+    // Configurar feedback háptico y tema
+    this.initializeCapacitorPlugins();
+  }
+
+  /**
+   * IL5: Carga datos síncronos (consultas rápidas en caché)
+   */
+  private loadSyncData() {
+    try {
+      // Obtener juegos usando consultas síncronas (muy rápido)
+      this.syncGames = this.syncQuery.getAllGamesSync();
+      console.log('IL5 - Juegos síncronos cargados:', this.syncGames.length);
+
+      // Obtener estadísticas rápidas
+      this.syncStats = this.syncQuery.getStatisticsSync();
+      console.log('IL5 - Estadísticas:', this.syncStats);
+    } catch (err) {
+      console.warn('Error en loadSyncData', err);
+    }
+  }
+
+  /**
+   * IL6: Carga datos asincronos con persistencia automática
+   */
+  private loadAsyncDataWithPersistence() {
+    try {
+      // Cargar desde API con fallback a caché
+      this.asyncPersistence.getGamesWithPersistence().subscribe({
+        next: (games) => {
+          console.log('IL6 - Juegos asincónicos cargados:', games.length);
+          // Los datos se actualizan automáticamente en asyncGames$
+        },
+        error: (err) => {
+          console.warn('Error en IL6:', err);
+          // Ya está manejado por el servicio (retorna caché si hay)
+        }
+      });
+    } catch (err) {
+      console.warn('Error en loadAsyncDataWithPersistence', err);
+    }
+  }
+
+  /**
+   * IL7: Inicializa plugins de Capacitor
+   */
+  private initializeCapacitorPlugins() {
+    try {
+      if (this.capacitorPlugins.isNativePlatform()) {
+        // Configurar tema según preferencia del sistema
+        this.capacitorPlugins.setAppTheme('light');
+
+        // Dar feedback háptico al cargar la página
+        this.capacitorPlugins.hapticImpactLight();
+
+        console.log('IL7 - Plugins de Capacitor inicializados');
+      }
+    } catch (err) {
+      console.warn('Error en initializeCapacitorPlugins', err);
+    }
   }
 
   handleScrollStart() {
@@ -96,6 +184,8 @@ export class HomePage implements OnInit {
 
   logout() {
     localStorage.removeItem('currentUser');
+    // IL7: Feedback háptico antes de logout
+    this.capacitorPlugins.feedbackSuccess();
     this.router.navigateByUrl('/login');
   }
 
@@ -153,6 +243,8 @@ export class HomePage implements OnInit {
           localStorage.setItem('currentUser', JSON.stringify(obj));
           // pequeña animación de feedback en el avatar
           this.animateAvatarPulse();
+          // IL7: Feedback háptico al seleccionar avatar
+          this.capacitorPlugins.feedbackButtonClick();
         } catch (err) {
           // aún así intentamos animar avatar
           this.animateAvatarPulse();

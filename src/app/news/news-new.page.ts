@@ -26,7 +26,9 @@ import { DatabaseService } from '../core/database.service';
         <ion-button expand="block" type="submit" [disabled]="form.invalid">Guardar</ion-button>
       </form>
     </ion-content>
-  `
+  `,
+  standalone: true,
+  imports: [CommonModule, IonicModule, FormsModule, ReactiveFormsModule]
 })
 export class NewsNewPage {
   form: FormGroup;

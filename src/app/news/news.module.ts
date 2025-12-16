@@ -8,12 +8,14 @@ import { NewsNewPage } from './news-new.page';
 import { NewsDetailPage } from './news-detail.page';
 
 @NgModule({
-  declarations: [NewsPage, NewsNewPage, NewsDetailPage],
+  declarations: [NewsDetailPage],
   imports: [
     CommonModule,
     IonicModule,
     FormsModule,
     ReactiveFormsModule,
+    NewsPage,
+    NewsNewPage,
     RouterModule.forChild([
       {
         path: '',

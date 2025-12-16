@@ -9,7 +9,9 @@ import { News } from '../models/news.model';
 @Component({
   selector: 'app-news',
   templateUrl: './news.page.html',
-  styleUrls: ['./news.page.scss']
+  styleUrls: ['./news.page.scss'],
+  standalone: true,
+  imports: [CommonModule, IonicModule, FormsModule, ReactiveFormsModule]
 })
 export class NewsPage implements OnInit, OnDestroy {
   form: FormGroup;

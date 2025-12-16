@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
 import { DatabaseService } from '../core/database.service';
 
@@ -21,7 +19,8 @@ import { DatabaseService } from '../core/database.service';
       </div>
       <div *ngIf="!item">Cargando...</div>
     </ion-content>
-  `
+  `,
+  standalone: false
 })
 export class NewsDetailPage implements OnInit {
   item: any = null;

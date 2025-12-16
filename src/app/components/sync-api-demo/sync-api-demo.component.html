@@ -1,0 +1,199 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Consultas Síncronas a API</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="sync-api-demo-container">
+  <!-- Sección de estadísticas del caché -->
+  <ion-card class="stats-card">
+    <ion-card-header>
+      <ion-card-title>📊 Estadísticas de Caché</ion-card-title>
+    </ion-card-header>
+    <ion-card-content *ngIf="cacheStats">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <div class="stat">
+              <span class="label">Posts en caché</span>
+              <span class="value">{{ cacheStats.postCount }}</span>
+            </div>
+          </ion-col>
+          <ion-col size="6">
+            <div class="stat">
+              <span class="label">Usuarios en caché</span>
+              <span class="value">{{ cacheStats.userCount }}</span>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="6">
+            <div class="stat">
+              <span class="label">Últimas actualizaciones</span>
+              <span class="value">{{ formatTimestamp(cacheStats.lastUpdate) }}</span>
+            </div>
+          </ion-col>
+          <ion-col size="6">
+            <div class="stat">
+              <span class="label">Edad del caché</span>
+              <span class="value">{{ cacheStats.age }}s</span>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Controles de caché -->
+  <ion-card class="controls-card">
+    <ion-card-content>
+      <ion-button expand="block" fill="solid" color="warning" (click)="forceSync()">
+        <ion-icon name="refresh" slot="start"></ion-icon>
+        Sincronizar desde API
+      </ion-button>
+      <ion-button expand="block" fill="outline" color="danger" (click)="clearCache()">
+        <ion-icon name="trash" slot="start"></ion-icon>
+        Limpiar caché
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Búsqueda síncrona -->
+  <ion-card class="search-card">
+    <ion-card-header>
+      <ion-card-title>🔍 Búsqueda Rápida (Síncrona)</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-searchbar
+        [(ngModel)]="searchQuery"
+        (ionInput)="onSearch()"
+        placeholder="Busca posts, usuarios, comentarios..."
+        debounce="300">
+      </ion-searchbar>
+
+      <!-- Resultados de búsqueda -->
+      <div *ngIf="searchResults.posts.length > 0 || searchResults.users.length > 0 || searchResults.comments.length > 0" class="search-results">
+        <div *ngIf="searchResults.posts.length > 0" class="result-section">
+          <h3>📄 Posts ({{ searchResults.posts.length }})</h3>
+          <ion-list>
+            <ion-item *ngFor="let post of searchResults.posts.slice(0, 3)">
+              <ion-label>
+                <h3 class="post-title">{{ post.title }}</h3>
+                <p class="post-body">{{ post.body | slice:0:60 }}...</p>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+        </div>
+
+        <div *ngIf="searchResults.users.length > 0" class="result-section">
+          <h3>👥 Usuarios ({{ searchResults.users.length }})</h3>
+          <ion-list>
+            <ion-item *ngFor="let user of searchResults.users.slice(0, 3)">
+              <ion-label>
+                <h3>{{ user.name }}</h3>
+                <p>{{ user.email }}</p>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+        </div>
+
+        <div *ngIf="searchResults.comments.length > 0" class="result-section">
+          <h3>💬 Comentarios ({{ searchResults.comments.length }})</h3>
+          <ion-list>
+            <ion-item *ngFor="let comment of searchResults.comments.slice(0, 3)">
+              <ion-label>
+                <h3>{{ comment.name }}</h3>
+                <p class="comment-body">{{ comment.body | slice:0:60 }}...</p>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Tabs para mostrar datos -->
+  <ion-tabs>
+    <ion-tab-bar slot="bottom" color="light">
+      <ion-tab-button tab="posts" (click)="activeTab = 'posts'">
+        <ion-icon name="document"></ion-icon>
+        <ion-label>Posts</ion-label>
+      </ion-tab-button>
+      <ion-tab-button tab="users" (click)="activeTab = 'users'">
+        <ion-icon name="people"></ion-icon>
+        <ion-label>Usuarios</ion-label>
+      </ion-tab-button>
+      <ion-tab-button tab="comments" (click)="activeTab = 'comments'">
+        <ion-icon name="chatbubbles"></ion-icon>
+        <ion-label>Comentarios</ion-label>
+      </ion-tab-button>
+    </ion-tab-bar>
+  </ion-tabs>
+
+  <!-- Content dentro de tabs -->
+  <ion-grid class="content-grid">
+    <!-- Posts Tab -->
+    <div *ngIf="activeTab === 'posts'">
+      <ion-card class="loading-indicator" *ngIf="(isLoadingPosts$ | async)">
+        <ion-card-content>
+          <ion-spinner></ion-spinner>
+          <p>Actualizando desde API...</p>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card *ngFor="let post of posts.slice(0, 10)" class="post-card">
+        <ion-card-header>
+          <ion-card-subtitle>Post #{{ post.id }}</ion-card-subtitle>
+          <ion-card-title>{{ post.title }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <p>{{ post.body }}</p>
+          <ion-note>
+            <ion-icon name="person-circle"></ion-icon>
+            Usuario #{{ post.userId }}
+          </ion-note>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Users Tab -->
+    <div *ngIf="activeTab === 'users'">
+      <ion-card class="loading-indicator" *ngIf="(isLoadingUsers$ | async)">
+        <ion-card-content>
+          <ion-spinner></ion-spinner>
+          <p>Actualizando desde API...</p>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card *ngFor="let user of users" class="user-card">
+        <ion-card-header>
+          <ion-card-title>{{ user.name }}</ion-card-title>
+          <ion-card-subtitle>@{{ user.username }}</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+          <p><strong>Email:</strong> {{ user.email }}</p>
+          <p><strong>Teléfono:</strong> {{ user.phone }}</p>
+          <p><strong>Sitio Web:</strong> {{ user.website }}</p>
+          <p><strong>Empresa:</strong> {{ user.company?.name }}</p>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Comments Tab -->
+    <div *ngIf="activeTab === 'comments'">
+      <ion-card *ngFor="let comment of comments.slice(0, 10)" class="comment-card">
+        <ion-card-header>
+          <ion-card-subtitle>Comentario #{{ comment.id }} - Post #{{ comment.postId }}</ion-card-subtitle>
+          <ion-card-title>{{ comment.name }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <p>{{ comment.body }}</p>
+          <ion-note>
+            <ion-icon name="mail"></ion-icon>
+            {{ comment.email }}
+          </ion-note>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </ion-grid>
+</ion-content>

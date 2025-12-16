@@ -143,9 +143,21 @@ export class DatabaseService {
           const list: Game[] = [];
           const cats = ['Acción','Aventura','Estrategia','Deportes','Puzzle'];
           let id = 1;
-          for (const c of cats) {
+          for (let catIdx = 0; catIdx < cats.length; catIdx++) {
+            const c = cats[catIdx];
             for (let i = 1; i <= 5; i++) {
-              list.push({ id: id++, title: `${c} Game ${i}`, category: c, price: `$${(i*1.99).toFixed(2)}`, image: `https://picsum.photos/seed/${c}${i}/640/360` });
+              list.push({
+                id: id++,
+                name: `${c} Game ${i}`,
+                title: `${c} Game ${i}`,
+                categoryId: catIdx + 1,
+                category: c,
+                description: `This is an awesome ${c.toLowerCase()} game`,
+                rules: `Play and have fun with ${c.toLowerCase()}`,
+                difficulty: i <= 2 ? 'Easy' : i <= 4 ? 'Medium' : 'Hard',
+                price: `$${(i*1.99).toFixed(2)}`,
+                image: `https://picsum.photos/seed/${c}${i}/640/360`
+              });
             }
           }
           localStorage.setItem('app_games_fallback', JSON.stringify(list));

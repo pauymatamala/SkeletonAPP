@@ -37,6 +37,11 @@ const routes: Routes = [
     loadChildren: () => import('./news/news.module').then(m => m.NewsPageModule)
   }
   ,
+    {
+      path: 'sync-api',
+      canActivate: [AuthGuard],
+      loadChildren: () => import('./sync-api/sync-api.module').then(m => m.SyncApiPageModule)
+    },
   {
     path: '**',
     loadChildren: () => import('./not-found/not-found.module').then(m => m.NotFoundPageModule)
