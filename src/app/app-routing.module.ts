@@ -16,6 +16,7 @@ const routes: Routes = [
   {
     path: 'home',
     data: { preload: true },
+    canActivate: [AuthGuard],
     loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
   },
   {
@@ -24,6 +25,7 @@ const routes: Routes = [
   },
   {
     path: 'portada',
+    canActivate: [AuthGuard],
     loadChildren: () => import('./portada/portada.module').then( m => m.PortadaPageModule)
   },
   {

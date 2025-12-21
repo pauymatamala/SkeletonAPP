@@ -74,7 +74,19 @@ export class HomePage implements OnInit {
       if (currentUserRaw) {
         try {
           const parsed = JSON.parse(currentUserRaw);
-          storedUsername = parsed?.username ?? String(currentUserRaw);
+          storedUsername = parsed?.username ?? null;
+          // If username not present, try profiles mapping by email
+          if (!storedUsername && parsed?.email) {
+            try {
+              const profilesRaw = localStorage.getItem('profiles');
+              if (profilesRaw) {
+                const profiles = JSON.parse(profilesRaw) as Record<string, any>;
+                const prof = profiles[parsed.email];
+                storedUsername = prof?.displayName ?? null;
+              }
+            } catch {}
+          }
+          if (!storedUsername) storedUsername = String(currentUserRaw);
         } catch {
           storedUsername = currentUserRaw;
         }

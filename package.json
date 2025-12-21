@@ -1,8 +1,9 @@
 {
-  "name": "SkeletonAPP",
-  "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "name": "skeleton-app",
+  "version": "1.0.0",
+  "author": "Paula Yasmin Matamala Medel",
+  "description": "Aplicación móvil híbrida con Ionic/Angular para gestion de video juegos",
+  "homepage": "https://github.com/duoc-uc/skeleton-app",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

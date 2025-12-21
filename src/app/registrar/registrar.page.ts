@@ -53,6 +53,7 @@ export class RegistrarPage implements OnInit {
       const email = temp.email as string;
       const password = temp.password as string;
       users[email] = password;
+      users[String(email).toLowerCase()] = password;
       await this.storageService.set('users', users);
       // también opcionalmente marcar como usuario actual
       await this.storageService.set('currentUser', { email });

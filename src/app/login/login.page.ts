@@ -44,12 +44,50 @@ export class LoginPage implements OnInit {
   get password() { return this.loginForm.get('password')!; }
 
   async onSubmit() {
+    console.log('DEBUG: onSubmit() called');
+    
+    // Ensure storage is initialized
+    await this.storageService.init();
+    console.log('DEBUG: Storage initialized');
+    
     if (this.loginForm.invalid) {
+      console.log('DEBUG: Form invalid, returning');
       this.loginForm.markAllAsTouched();
       return;
     }
-    const email = this.loginForm.value.email;
-    // Guardar usuario para persistencia usando StorageService
+    const email = this.loginForm.value.email as string;
+    const password = this.loginForm.value.password as string;
+    console.log('DEBUG: Attempting login with email:', email);
+
+    // Get users from StorageService (Ionic Storage)
+    const users = (await this.storageService.get<Record<string, string>>('users')) || {};
+    console.log('DEBUG: Users from StorageService:', users);
+    console.log('DEBUG: Number of users found:', Object.keys(users).length);
+    console.log('DEBUG: User keys:', Object.keys(users));
+    
+    const storedPass = users[email] ?? users[email.toLowerCase()] ?? null;
+    console.log('DEBUG: Stored password for email:', storedPass);
+    if (!storedPass) {
+      console.log('DEBUG: User does not exist');
+      const alert = await this.alertCtrl.create({
+        header: 'Usuario no existe',
+        message: 'Debes crear el usuario antes de iniciar sesión.',
+        buttons: ['OK']
+      });
+      await alert.present();
+      return;
+    }
+    if (storedPass !== password) {
+      const alert = await this.alertCtrl.create({
+        header: 'Contraseña incorrecta',
+        message: 'La contraseña no coincide.',
+        buttons: ['OK']
+      });
+      await alert.present();
+      return;
+    }
+
+    // Guardar usuario logueado y navegar
     try {
       const cur = (await this.storageService.get<any>('currentUser')) || {};
       cur.email = email;
@@ -57,7 +95,6 @@ export class LoginPage implements OnInit {
     } catch (e) {
       await this.storageService.set('currentUser', { email });
     }
-    // Navegar a Portada pasando el email en state
     this.router.navigate(['/portada'], { state: { email }, queryParams: { email } });
   }
 
@@ -85,6 +122,7 @@ export class LoginPage implements OnInit {
       return;
     }
     users[user] = pass;
+    users[String(user).toLowerCase()] = pass;
     await this.storageService.set('users', users);
     const toast = await this.toastCtrl.create({ message: 'Usuario creado correctamente', duration: 2000 });
     await toast.present();

@@ -7,6 +7,7 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
 import { AppComponent } from './app.component';
 import { IonicStorageModule } from '@ionic/storage-angular';
+import { Drivers } from '@ionic/storage';
 import { AppRoutingModule } from './app-routing.module';
 import { MaterialModule } from './material.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -16,7 +17,18 @@ import { AuthService } from './core/auth.service';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, BrowserAnimationsModule, IonicModule.forRoot(), AppRoutingModule, MaterialModule, IonicStorageModule.forRoot(), HttpClientModule],
+  imports: [
+    BrowserModule, 
+    BrowserAnimationsModule, 
+    IonicModule.forRoot(), 
+    AppRoutingModule, 
+    MaterialModule, 
+    IonicStorageModule.forRoot({
+      name: '__skeletonappdb',
+      driverOrder: [Drivers.IndexedDB, Drivers.LocalStorage]
+    }), 
+    HttpClientModule
+  ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
