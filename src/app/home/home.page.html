@@ -95,6 +95,67 @@
           </ion-card>
         </ion-col>
       </ion-row>
+
+      <!-- Sección: Demos y Funcionalidades -->
+      <ion-row>
+        <ion-col size="12">
+          <h2 class="section-title">
+            <ion-icon name="rocket-outline"></ion-icon>
+            Demos y Funcionalidades
+          </h2>
+        </ion-col>
+
+        <!-- Card: Plugins Nativos -->
+        <ion-col size="12" size-md="6" size-lg="4">
+          <ion-card class="feature-card" button routerLink="/plugins-demo">
+            <div class="feature-icon-wrapper" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+              <ion-icon name="construct"></ion-icon>
+            </div>
+            <ion-card-header>
+              <ion-card-title>Plugins Nativos</ion-card-title>
+              <ion-card-subtitle>Camera, GPS, Share, Haptics</ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content>
+              <p>Explora las capacidades nativas del dispositivo</p>
+              <ion-badge color="success">7 Plugins</ion-badge>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
+        <!-- Card: API Síncrona -->
+        <ion-col size="12" size-md="6" size-lg="4">
+          <ion-card class="feature-card" button routerLink="/sync-api">
+            <div class="feature-icon-wrapper" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+              <ion-icon name="flash"></ion-icon>
+            </div>
+            <ion-card-header>
+              <ion-card-title>Consultas Síncronas</ion-card-title>
+              <ion-card-subtitle>API con caché inteligente</ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content>
+              <p>Datos instantáneos con actualización automática</p>
+              <ion-badge color="warning">Ultra-rápido</ion-badge>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
+        <!-- Card: Noticias -->
+        <ion-col size="12" size-md="6" size-lg="4">
+          <ion-card class="feature-card" button routerLink="/news">
+            <div class="feature-icon-wrapper" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+              <ion-icon name="newspaper"></ion-icon>
+            </div>
+            <ion-card-header>
+              <ion-card-title>Noticias</ion-card-title>
+              <ion-card-subtitle>Base de datos persistente</ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content>
+              <p>SQLite con sincronización offline</p>
+              <ion-badge color="primary">Persistencia</ion-badge>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
     </ion-grid>
   </div>
 </ion-content>

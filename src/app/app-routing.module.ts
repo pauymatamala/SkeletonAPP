@@ -35,13 +35,19 @@ const routes: Routes = [
     path: 'news',
     canActivate: [AuthGuard],
     loadChildren: () => import('./news/news.module').then(m => m.NewsPageModule)
-  }
-  ,
-    {
-      path: 'sync-api',
-      canActivate: [AuthGuard],
-      loadChildren: () => import('./sync-api/sync-api.module').then(m => m.SyncApiPageModule)
-    },
+  },
+  {
+    path: 'sync-api',
+    canActivate: [AuthGuard],
+    data: { preload: true },
+    loadChildren: () => import('./sync-api/sync-api.module').then(m => m.SyncApiPageModule)
+  },
+  {
+    path: 'plugins-demo',
+    canActivate: [AuthGuard],
+    data: { preload: true },
+    loadComponent: () => import('./plugins-demo/plugins-demo.page').then(m => m.PluginsDemoPage)
+  },
   {
     path: '**',
     loadChildren: () => import('./not-found/not-found.module').then(m => m.NotFoundPageModule)

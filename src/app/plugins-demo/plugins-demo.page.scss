@@ -1,0 +1,229 @@
+.platform-info {
+  margin-bottom: 16px;
+  
+  ion-card-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+}
+
+.tab-content {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.button-grid {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+/* Camera Tab */
+.captured-image {
+  margin-top: 16px;
+  text-align: center;
+  
+  ion-img {
+    max-height: 300px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+}
+
+.photo-gallery {
+  margin-top: 16px;
+  
+  h4 {
+    margin-bottom: 8px;
+    color: var(--ion-color-medium);
+  }
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  
+  img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+}
+
+/* Location Tab */
+.location-card {
+  margin-top: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  
+  h3 {
+    color: white;
+    margin-bottom: 12px;
+  }
+  
+  ion-list {
+    background: transparent;
+    
+    ion-item {
+      --background: rgba(255,255,255,0.1);
+      --color: white;
+      margin-bottom: 8px;
+      border-radius: 4px;
+      
+      ion-label {
+        h4 {
+          color: rgba(255,255,255,0.8);
+          font-size: 0.85em;
+        }
+        
+        p {
+          color: white;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
+
+.location-history {
+  margin-top: 16px;
+  
+  .history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    
+    h4 {
+      margin: 0;
+      color: var(--ion-color-medium);
+    }
+  }
+}
+
+.watching-badge {
+  position: fixed;
+  top: 120px;
+  right: 16px;
+  z-index: 10;
+  padding: 8px 12px;
+  font-size: 0.85em;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Share Tab */
+.share-options {
+  display: grid;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+/* Haptics Tab */
+.section-title {
+  margin-top: 24px;
+  margin-bottom: 12px;
+  color: var(--ion-color-medium);
+  font-size: 1em;
+  font-weight: 600;
+}
+
+/* Stats Card */
+.stats-card {
+  margin-top: 24px;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  
+  ion-card-header {
+    ion-card-title {
+      color: white;
+    }
+  }
+}
+
+.stat-item {
+  text-align: center;
+  padding: 12px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 8px;
+  
+  ion-icon {
+    font-size: 2em;
+    margin-bottom: 8px;
+  }
+  
+  h3 {
+    margin: 8px 0 4px;
+    font-size: 1.8em;
+    font-weight: bold;
+    color: white;
+  }
+  
+  p {
+    margin: 0;
+    font-size: 0.85em;
+    color: rgba(255,255,255,0.9);
+  }
+}
+
+/* Responsiveness */
+@media (min-width: 768px) {
+  .button-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .gallery-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .button-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .gallery-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* Notes */
+ion-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 8px;
+  background: var(--ion-color-light);
+  border-radius: 4px;
+  font-size: 0.85em;
+}

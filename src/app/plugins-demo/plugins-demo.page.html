@@ -1,0 +1,372 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <ion-icon name="construct-outline"></ion-icon>
+      Demo de Plugins Nativos
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="resetStats()">
+        <ion-icon name="refresh-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <!-- Tabs de navegación -->
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="activeTab" (ionChange)="setActiveTab($any($event.detail.value))">
+      <ion-segment-button value="camera">
+        <ion-icon name="camera-outline"></ion-icon>
+        <ion-label>Cámara</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="location">
+        <ion-icon name="location-outline"></ion-icon>
+        <ion-label>GPS</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="share">
+        <ion-icon name="share-social-outline"></ion-icon>
+        <ion-label>Compartir</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="haptics">
+        <ion-icon name="phone-portrait-outline"></ion-icon>
+        <ion-label>Háptico</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  
+  <!-- Información de plataforma -->
+  <ion-card class="platform-info">
+    <ion-card-content>
+      <ion-chip [color]="platformInfo.isNative ? 'success' : 'warning'">
+        <ion-icon [name]="platformInfo.isNative ? 'checkmark-circle' : 'alert-circle'"></ion-icon>
+        <ion-label>{{ platformInfo.platform === 'web' ? 'Navegador Web' : 'App Nativa' }}</ion-label>
+      </ion-chip>
+      <ion-text color="medium">
+        <p class="ion-no-margin"><small>Plataforma: {{ platformInfo.platform }}</small></p>
+      </ion-text>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- TAB: CAMERA -->
+  <div *ngIf="activeTab === 'camera'" class="tab-content">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="camera" color="primary"></ion-icon>
+          Plugin: Camera
+        </ion-card-title>
+        <ion-card-subtitle>@capacitor/camera v6.0</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <p>Captura fotos con la cámara o selecciona de la galería</p>
+        
+        <!-- Botones de acción -->
+        <div class="button-grid">
+          <ion-button expand="block" (click)="takePicture()" [disabled]="!platformInfo.isNative">
+            <ion-icon slot="start" name="camera"></ion-icon>
+            Tomar Foto
+          </ion-button>
+          
+          <ion-button expand="block" (click)="pickFromGallery()" fill="outline">
+            <ion-icon slot="start" name="images"></ion-icon>
+            Galería
+          </ion-button>
+          
+          <ion-button expand="block" (click)="pickMultiple()" color="secondary" [disabled]="!platformInfo.isNative">
+            <ion-icon slot="start" name="albums"></ion-icon>
+            Múltiples Fotos
+          </ion-button>
+        </div>
+
+        <!-- Imagen capturada -->
+        <div *ngIf="capturedImage" class="captured-image">
+          <ion-img [src]="capturedImage" alt="Foto capturada"></ion-img>
+          <ion-button size="small" color="danger" (click)="clearGallery()">
+            <ion-icon name="trash"></ion-icon>
+            Limpiar
+          </ion-button>
+        </div>
+
+        <!-- Galería de miniaturas -->
+        <div *ngIf="photoGallery.length > 0" class="photo-gallery">
+          <h4>Galería ({{ photoGallery.length }} fotos)</h4>
+          <div class="gallery-grid">
+            <img *ngFor="let photo of photoGallery.slice(0, 6)" 
+                 [src]="photo" 
+                 (click)="capturedImage = photo"
+                 alt="Foto de galería">
+          </div>
+        </div>
+
+        <!-- Info -->
+        <ion-note color="medium" *ngIf="!platformInfo.isNative">
+          <ion-icon name="information-circle"></ion-icon>
+          La cámara requiere una app nativa. Compila para Android/iOS.
+        </ion-note>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- TAB: LOCATION -->
+  <div *ngIf="activeTab === 'location'" class="tab-content">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="location" color="danger"></ion-icon>
+          Plugin: Geolocation
+        </ion-card-title>
+        <ion-card-subtitle>@capacitor/geolocation v6.0</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <p>Obtiene la ubicación GPS del dispositivo</p>
+        
+        <!-- Botones de acción -->
+        <div class="button-grid">
+          <ion-button expand="block" (click)="getCurrentLocation()">
+            <ion-icon slot="start" name="navigate"></ion-icon>
+            Obtener Ubicación
+          </ion-button>
+          
+          <ion-button 
+            expand="block" 
+            [color]="isWatchingLocation ? 'danger' : 'secondary'"
+            (click)="toggleWatchLocation()">
+            <ion-icon slot="start" [name]="isWatchingLocation ? 'stop-circle' : 'radio-button-on'"></ion-icon>
+            {{ isWatchingLocation ? 'Detener' : 'Monitorear' }}
+          </ion-button>
+        </div>
+
+        <!-- Ubicación actual -->
+        <ion-card *ngIf="currentPosition" class="location-card">
+          <ion-card-content>
+            <h3>📍 Ubicación Actual</h3>
+            <ion-list>
+              <ion-item>
+                <ion-label>
+                  <h4>Coordenadas</h4>
+                  <p>{{ formatCoordinates(currentPosition) }}</p>
+                </ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label>
+                  <h4>Precisión</h4>
+                  <p>{{ formatAccuracy(currentPosition.coords.accuracy) }}</p>
+                </ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label>
+                  <h4>Altitud</h4>
+                  <p>{{ currentPosition.coords.altitude ? (currentPosition.coords.altitude + 'm') : 'N/A' }}</p>
+                </ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label>
+                  <h4>Hora</h4>
+                  <p>{{ formatTimestamp(currentPosition.timestamp) }}</p>
+                </ion-label>
+              </ion-item>
+            </ion-list>
+            
+            <ion-button expand="block" (click)="openInMaps()" color="success">
+              <ion-icon slot="start" name="map"></ion-icon>
+              Abrir en Google Maps
+            </ion-button>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- Historial de ubicaciones -->
+        <div *ngIf="locationHistory.length > 0" class="location-history">
+          <div class="history-header">
+            <h4>Historial ({{ locationHistory.length }})</h4>
+            <ion-button size="small" fill="clear" (click)="clearLocationHistory()">
+              <ion-icon name="trash"></ion-icon>
+            </ion-button>
+          </div>
+          <ion-list>
+            <ion-item *ngFor="let pos of locationHistory.slice(0, 5)">
+              <ion-icon name="location-outline" slot="start" color="danger"></ion-icon>
+              <ion-label>
+                <h3>{{ formatCoordinates(pos) }}</h3>
+                <p>{{ formatTimestamp(pos.timestamp) }} · {{ formatAccuracy(pos.coords.accuracy) }}</p>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+        </div>
+
+        <ion-badge *ngIf="isWatchingLocation" color="success" class="watching-badge">
+          <ion-icon name="radio-button-on"></ion-icon>
+          Monitoreando en vivo
+        </ion-badge>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- TAB: SHARE -->
+  <div *ngIf="activeTab === 'share'" class="tab-content">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="share-social" color="tertiary"></ion-icon>
+          Plugin: Share
+        </ion-card-title>
+        <ion-card-subtitle>@capacitor/share v6.0</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <p>Comparte contenido en redes sociales y apps</p>
+        
+        <!-- Opciones de compartir -->
+        <div class="share-options">
+          <ion-button expand="block" (click)="shareApp()" color="primary">
+            <ion-icon slot="start" name="rocket"></ion-icon>
+            Compartir App
+          </ion-button>
+          
+          <ion-button 
+            expand="block" 
+            (click)="shareLocation()" 
+            [disabled]="!currentPosition"
+            color="danger">
+            <ion-icon slot="start" name="location"></ion-icon>
+            Compartir Ubicación
+          </ion-button>
+          
+          <ion-button 
+            expand="block" 
+            (click)="sharePhoto()" 
+            [disabled]="!capturedImage"
+            color="secondary">
+            <ion-icon slot="start" name="image"></ion-icon>
+            Compartir Foto
+          </ion-button>
+          
+          <ion-button expand="block" (click)="shareStats()" color="success">
+            <ion-icon slot="start" name="bar-chart"></ion-icon>
+            Compartir Estadísticas
+          </ion-button>
+        </div>
+
+        <ion-note color="medium">
+          <ion-icon name="information-circle"></ion-icon>
+          Las opciones deshabilitadas requieren datos previos (foto, ubicación)
+        </ion-note>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- TAB: HAPTICS -->
+  <div *ngIf="activeTab === 'haptics'" class="tab-content">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="phone-portrait" color="warning"></ion-icon>
+          Plugin: Haptics
+        </ion-card-title>
+        <ion-card-subtitle>@capacitor/haptics v7.0</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <p>Feedback háptico y vibraciones</p>
+        
+        <!-- Impactos -->
+        <h4>Impactos</h4>
+        <div class="button-grid">
+          <ion-button expand="block" (click)="testHapticLight()" fill="outline">
+            <ion-icon slot="start" name="ellipse-outline"></ion-icon>
+            Ligero
+          </ion-button>
+          <ion-button expand="block" (click)="testHapticMedium()" fill="outline">
+            <ion-icon slot="start" name="ellipse"></ion-icon>
+            Medio
+          </ion-button>
+          <ion-button expand="block" (click)="testHapticHeavy()" fill="outline">
+            <ion-icon slot="start" name="disc"></ion-icon>
+            Fuerte
+          </ion-button>
+        </div>
+
+        <!-- Notificaciones -->
+        <h4 class="section-title">Notificaciones</h4>
+        <div class="button-grid">
+          <ion-button expand="block" (click)="testHapticSuccess()" color="success">
+            <ion-icon slot="start" name="checkmark-circle"></ion-icon>
+            Éxito
+          </ion-button>
+          <ion-button expand="block" (click)="testHapticWarning()" color="warning">
+            <ion-icon slot="start" name="warning"></ion-icon>
+            Advertencia
+          </ion-button>
+          <ion-button expand="block" (click)="testHapticError()" color="danger">
+            <ion-icon slot="start" name="close-circle"></ion-icon>
+            Error
+          </ion-button>
+        </div>
+
+        <!-- Patrones -->
+        <h4 class="section-title">Patrones</h4>
+        <ion-button expand="block" (click)="testVibrationPattern()" color="secondary">
+          <ion-icon slot="start" name="pulse"></ion-icon>
+          Patrón Personalizado
+        </ion-button>
+        
+        <ion-button expand="block" (click)="testSelectionChanged()" fill="outline">
+          <ion-icon slot="start" name="radio-button-on"></ion-icon>
+          Cambio de Selección
+        </ion-button>
+
+        <ion-note color="medium" *ngIf="!platformInfo.isNative">
+          <ion-icon name="information-circle"></ion-icon>
+          El feedback háptico funciona mejor en dispositivos nativos
+        </ion-note>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Estadísticas globales -->
+  <ion-card class="stats-card">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="bar-chart-outline"></ion-icon>
+        Estadísticas de Uso
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <div class="stat-item">
+              <ion-icon name="camera" color="primary"></ion-icon>
+              <h3>{{ stats.photoCaptured }}</h3>
+              <p>Fotos</p>
+            </div>
+          </ion-col>
+          <ion-col size="6">
+            <div class="stat-item">
+              <ion-icon name="location" color="danger"></ion-icon>
+              <h3>{{ stats.locationsObtained }}</h3>
+              <p>Ubicaciones</p>
+            </div>
+          </ion-col>
+          <ion-col size="6">
+            <div class="stat-item">
+              <ion-icon name="share-social" color="tertiary"></ion-icon>
+              <h3>{{ stats.sharesCompleted }}</h3>
+              <p>Compartidos</p>
+            </div>
+          </ion-col>
+          <ion-col size="6">
+            <div class="stat-item">
+              <ion-icon name="phone-portrait" color="warning"></ion-icon>
+              <h3>{{ stats.hapticsFeedback }}</h3>
+              <p>Hápticos</p>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>
